@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Conversioni — Archery Lab</title>
+<meta name="description" content="Conversioni rapide per il tiro con l'arco: grani, grammi, pollici, centimetri, libbre e velocità.">
+<meta name="theme-color" content="#eef1f6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#05070b" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Archery Lab">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap">
+<link rel="stylesheet" href="../css/glass.css">
+<link rel="stylesheet" href="../css/pages.css">
+</head>
+<body data-tab="altro" data-root="../">
+<a class="skip" href="#main">Vai al contenuto</a>
+<div class="app">
+  <header class="navbar">
+    <div class="nav-left"><a class="nav-btn glass" href="../altro/index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg>Altro</a></div>
+    <div class="nav-title">Conversioni</div>
+    <div class="nav-right"></div>
+  </header>
+
+  <main id="main">
+    <div class="large-title">
+      <span class="eyebrow">UTILITY · MISURE · ATTREZZATURA</span>
+      <h1>Conversioni <em>per l'arciere.</em></h1>
+      <p>Un unico posto per convertire le misure che incontri nelle schede tecniche di aste, punte, flettenti e accessori. Inserisci un valore: i risultati si aggiornano subito.</p>
+    </div>
+
+    <div class="converter-grid">
+      <section class="group converter" aria-labelledby="c-weight">
+        <div class="group-title" id="c-weight"><span class="dot" style="background:var(--gold)"></span>Pesi e masse · grani, grammi, once</div>
+        <div class="list">
+          <label>Valore<input id="weightValue" type="number" inputmode="decimal" step="any" value="100"></label>
+          <label>Unità di partenza
+            <select id="weightUnit"><option value="gr">Grani (gr)</option><option value="g">Grammi (g)</option><option value="oz">Once (oz)</option><option value="lb">Libbre (lb)</option><option value="kg">Chilogrammi (kg)</option></select>
+          </label>
+        </div>
+        <div class="list results" id="weightResults" aria-live="polite"></div>
+        <p class="group-foot">Grani e grammi misurano massa; la libbra può indicare massa o, per i flettenti, libbra-forza.</p>
+      </section>
+
+      <section class="group converter" aria-labelledby="c-length">
+        <div class="group-title" id="c-length"><span class="dot"></span>Lunghezze · pollici, centimetri</div>
+        <div class="list">
+          <label>Valore<input id="lengthValue" type="number" inputmode="decimal" step="any" value="30.5"></label>
+          <label>Unità di partenza
+            <select id="lengthUnit"><option value="inch">Pollici (in)</option><option value="cm">Centimetri (cm)</option><option value="mm">Millimetri (mm)</option><option value="ft">Piedi (ft)</option><option value="m">Metri (m)</option></select>
+          </label>
+        </div>
+        <div class="list results" id="lengthResults" aria-live="polite"></div>
+        <p class="group-foot">Conversione lineare esatta; utile per allungo, lunghezza asta e diametri.</p>
+      </section>
+
+      <section class="group converter" aria-labelledby="c-force">
+        <div class="group-title" id="c-force"><span class="dot" style="background:var(--red)"></span>Forza dei flettenti · lbf, kgf, N</div>
+        <div class="list">
+          <label>Valore<input id="forceValue" type="number" inputmode="decimal" step="any" value="32"></label>
+          <label>Unità di partenza
+            <select id="forceUnit"><option value="lbf">Libbre-forza (lb)</option><option value="kgf">Chilogrammi-forza (kgf)</option><option value="N">Newton (N)</option></select>
+          </label>
+        </div>
+        <div class="list results" id="forceResults" aria-live="polite"></div>
+        <p class="group-foot">La potenza indicata sui flettenti è una forza, non una massa.</p>
+      </section>
+
+      <section class="group converter" aria-labelledby="c-speed">
+        <div class="group-title" id="c-speed"><span class="dot" style="background:var(--teal)"></span>Velocità · m/s, fps, km/h</div>
+        <div class="list">
+          <label>Valore<input id="speedValue" type="number" inputmode="decimal" step="any" value="50"></label>
+          <label>Unità di partenza
+            <select id="speedUnit"><option value="ms">m/s</option><option value="fps">ft/s (fps)</option><option value="kmh">km/h</option></select>
+          </label>
+        </div>
+        <div class="list results" id="speedResults" aria-live="polite"></div>
+        <p class="group-foot">Per confrontare cronografi e schede tecniche.</p>
+      </section>
+    </div>
+
+    <section class="section" aria-labelledby="sum-title">
+      <div class="section-head">
+        <span class="eyebrow">ARROW BUILD</span>
+        <h2 id="sum-title">Somma il peso della freccia</h2>
+        <p>Inserisci i componenti in grani. I campi lasciati vuoti valgono zero.</p>
+      </div>
+      <div class="split">
+        <div class="col">
+          <div class="list">
+            <label>Asta <span>grani · peso misurato o GPI × lunghezza</span><input id="shaft" type="number" inputmode="decimal" min="0" step="any" value="0"></label>
+            <label>Punta <span>grani</span><input id="point" type="number" inputmode="decimal" min="0" step="any" value="100"></label>
+            <label>Inserto <span>grani</span><input id="insert" type="number" inputmode="decimal" min="0" step="any" value="0"></label>
+            <label>Cocca <span>grani</span><input id="nock" type="number" inputmode="decimal" min="0" step="any" value="0"></label>
+            <label>Alette / wrap <span>grani</span><input id="vanes" type="number" inputmode="decimal" min="0" step="any" value="0"></label>
+            <label>Altro <span>grani</span><input id="other" type="number" inputmode="decimal" min="0" step="any" value="0"></label>
+          </div>
+        </div>
+        <aside class="col">
+          <div class="card total-card">
+            <span class="kicker">PESO TOTALE STIMATO</span>
+            <strong id="arrowGrains" class="big-figure">100 gr</strong>
+            <span id="arrowGrams" class="pill tint">6,4799 g</span>
+            <p class="muted">Per l'asta puoi usare il peso totale in grani misurato oppure il valore GPI × lunghezza in pollici. Non inserire entrambi, altrimenti conteresti due volte la massa dell'asta.</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+  <footer class="app-footer"><span>Conversioni locali nel browser · Nessun dato inviato</span></footer>
+</div>
+<script src="../js/shell.js"></script>
+<script src="app.js"></script>
+<script src="../js/i18n.js" defer></script>
+</body>
+</html>

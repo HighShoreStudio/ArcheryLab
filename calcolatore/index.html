@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Calcolatore — Archery Lab</title>
+<meta name="description" content="Calcolatore per frecce e balistica del tiro con l'arco: peso, FOC, energia, densità dell'aria e traiettoria RK4.">
+<meta name="theme-color" content="#eef1f6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#05070b" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Archery Lab">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap">
+<link rel="stylesheet" href="../css/glass.css">
+<link rel="stylesheet" href="../css/pages.css">
+</head>
+<body data-tab="calcolatore" data-root="../">
+<a class="skip" href="#main">Vai al contenuto</a>
+<div class="app">
+  <header class="navbar">
+    <div class="nav-left"><a class="nav-btn icon glass" href="../index.html" aria-label="Torna alla Home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></a></div>
+    <div class="nav-title">Calcolatore</div>
+    <div class="nav-right"><button type="button" class="nav-btn glass" id="al-export-arrow-pdf" aria-label="Esporta scheda PDF"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.5h8.5L19 8v12.5H6z"/><path d="M14 3.5V8h5M12.5 11v6M9.8 14.5l2.7 2.7 2.7-2.7"/></svg><span class="hide-sm">Scheda PDF</span></button></div>
+  </header>
+
+  <main id="main">
+    <div class="large-title">
+      <span class="eyebrow">CALCOLATORE TECNICO</span>
+      <h1>Conosci meglio la tua freccia.</h1>
+      <p>Calcola peso, FOC, energia, condizioni dell'aria e una traiettoria teorica. Modifica i campi: i risultati si aggiornano automaticamente.</p>
+    </div>
+
+    <div class="segmented-sticky">
+      <nav class="segmented glass tabs" aria-label="Sezioni del calcolatore">
+        <button type="button" class="tab active" data-tab="setup">Attrezzatura</button>
+        <button type="button" class="tab" data-tab="arrow">Freccia</button>
+        <button type="button" class="tab" data-tab="ballistics">Balistica</button>
+        <button type="button" class="tab" data-tab="air">Aria</button>
+        <button type="button" class="tab" data-tab="trajectory">Traiettoria</button>
+      </nav>
+    </div>
+
+    <!-- 00 · ATTREZZATURA -->
+    <section class="panel active" id="panel-setup" aria-label="Attrezzatura">
+      <div class="section-heading">
+        <span class="eyebrow">SETUP BUILDER</span>
+        <h2>Prima seleziona la tua attrezzatura</h2>
+        <p>Descrivi il tuo arco e la tua configurazione. La traiettoria usa una stima energetica basata sulla potenza effettiva all’allungo, l’allungo e la massa della freccia; la stima non sostituisce il cronografo.</p>
+      </div>
+      <div class="split">
+        <div class="col">
+          <div class="group">
+            <div class="group-title"><span class="dot"></span>Configurazione dell'arco</div>
+            <div class="list">
+              <label>Tipo di arco <span>Seleziona la disciplina</span>
+                <select id="bowType">
+                  <option value="barebow" selected>Arco nudo · ricurvo barebow</option>
+                  <option value="olympic">Ricurvo olimpico</option>
+                  <option value="compound">Compound</option>
+                  <option value="longbow">Longbow</option>
+                  <option value="traditional">Tradizionale ricurvo</option>
+                  <option value="horsebow">Arco storico / a cavallo</option>
+                  <option value="other">Altro / configurazione custom</option>
+                </select>
+              </label>
+              <label>Mano dominante <span>Per interpretare i test</span>
+                <select id="bowHand"><option value="right" selected>Destra (RH)</option><option value="left">Sinistra (LH)</option></select>
+              </label>
+              <label class="field-span-2">Marca e modello <span>Facoltativo</span><input id="bowModel" type="text" maxlength="100" placeholder="Es. marca, modello, anno"></label>
+            </div>
+          </div>
+
+          <div id="recurveFields" class="group">
+            <div class="group-title"><span class="dot" style="background:var(--tint)"></span>Ricurvo · riser e flettenti</div>
+            <div class="list">
+              <label>Lunghezza riser <span>pollici</span>
+                <select id="riserLength"><option value="23">23″</option><option value="25" selected>25″</option><option value="27">27″</option></select>
+              </label>
+              <label>Flettenti <span>corti / medi / lunghi</span>
+                <select id="limbLength">
+                  <option value="short">Corti · 66″ nominali*</option>
+                  <option value="medium" selected>Medi · 68″ nominali*</option>
+                  <option value="long">Lunghi · 70″ nominali*</option>
+                  <option value="extra-long">Extra lunghi · 72″ nominali*</option>
+                </select>
+              </label>
+              <label>Potenza nominale flettenti <span>libbre indicate, alla lunghezza standard</span><input id="limbRatedWeight" type="number" inputmode="decimal" min="1" max="100" step="0.5" value="30"></label>
+            </div>
+            <p class="group-foot">*66″ / 68″ / 70″ / 72″ indicano la lunghezza nominale dell’arco con riser da 25″ nella classificazione comune target. Con riser diversi la lunghezza complessiva cambia; controlla sempre la specifica del produttore.</p>
+          </div>
+
+          <div id="compoundFields" class="group" hidden>
+            <div class="group-title"><span class="dot" style="background:var(--teal)"></span>Compound · cam e asse-asse</div>
+            <div class="list">
+              <label>Asse–asse (ATA) <span>pollici</span><input id="compoundAta" type="number" inputmode="decimal" min="20" max="50" step="0.25" value="33"></label>
+              <label>Let-off <span>percentuale dichiarata</span><input id="compoundLetoff" type="number" inputmode="decimal" min="0" max="95" step="1" value="75"></label>
+              <label>Velocità IBO dichiarata <span>fps · se disponibile</span><input id="compoundIboRating" type="number" inputmode="decimal" min="0" max="500" step="1" value="0"></label>
+              <label>Tipo cam <span>Facoltativo</span>
+                <select id="compoundCam"><option value="single">Single cam</option><option value="binary">Binary cam</option><option value="hybrid">Hybrid cam</option><option value="other">Altro / non noto</option></select>
+              </label>
+            </div>
+          </div>
+
+          <div id="traditionalFields" class="group" hidden>
+            <div class="group-title"><span class="dot" style="background:var(--red)"></span>Tradizionale · long bow / altro</div>
+            <div class="list">
+              <label>Lunghezza nominale arco <span>pollici</span><input id="traditionalBowLength" type="number" inputmode="decimal" min="40" max="100" step="1" value="68"></label>
+              <label>Potenza nominale arco <span>libbre dichiarate alla misura standard</span><input id="traditionalRatedWeight" type="number" inputmode="decimal" min="1" max="100" step="0.5" value="35"></label>
+              <label>Materiale / struttura <span>Facoltativo</span>
+                <select id="traditionalBuild"><option value="wood">Legno</option><option value="wood-glass">Legno / fibra</option><option value="carbon">Carbonio composito</option><option value="other">Altro / non noto</option></select>
+              </label>
+            </div>
+          </div>
+
+          <div id="limbTechGroup" class="group">
+            <div class="group-title"><span class="dot" style="background:var(--teal)"></span>Flettenti · marca, modello e composizione</div>
+            <div class="list">
+              <label>Marca flettenti <span>Se nota</span>
+                <select id="limbBrand">
+                  <option value="unknown" selected>Non specificata</option><option value="uukha">Uukha</option><option value="hoyt">Hoyt</option><option value="winwin">Win&amp;Win</option><option value="wns">WNS</option><option value="fivics">Fivics</option><option value="kinetic">Kinetic</option><option value="mybo">Mybo</option><option value="samick">Samick</option><option value="other">Altra marca</option>
+                </select>
+              </label>
+              <label>Preset modello Uukha Target <span>Riempie le specifiche note</span>
+                <select id="limbPreset">
+                  <option value="manual" selected>Manuale / altra marca</option>
+                  <option value="uukha-alpha">Uukha ALPHA · U5 Target · 70% carbonio / 30% vetro</option>
+                  <option value="uukha-sigma">Uukha SIGMA · U5 Target · 90% carbonio / 10% vetro</option>
+                  <option value="uukha-omega">Uukha OMEGA · U5 Target · 100% carbonio</option>
+                </select>
+              </label>
+              <label>Carbonio dichiarato <span>% indicata dal produttore</span>
+                <select id="limbCarbonPercent"><option value="" selected>Non noto / non dichiarato</option><option value="50">50% carbonio</option><option value="70">70% carbonio</option><option value="75">75% carbonio</option><option value="80">80% carbonio</option><option value="90">90% carbonio</option><option value="100">100% carbonio</option></select>
+              </label>
+              <label>Materiale / costruzione <span>Descrizione generale</span>
+                <select id="limbMaterial">
+                  <option value="carbon-monolith">Carbonio monolitico / struttura dedicata</option><option value="carbon-foam">Carbonio / schiuma</option><option value="carbon-wood">Carbonio / legno</option><option value="glass-foam">Fibra di vetro / schiuma</option><option value="glass-wood">Fibra di vetro / legno</option><option value="wood">Legno tradizionale</option><option value="other">Altro / non noto</option>
+                </select>
+              </label>
+              <label class="field-span-2">Marca e modello flettenti (testo libero) <span>Per modelli non presenti nel preset</span><input id="limbModel" type="text" maxlength="140" placeholder="Es. marca, serie, modello, anno o variante"></label>
+            </div>
+            <p class="group-foot" id="limbPresetNote">La percentuale di carbonio è un dato di composizione dichiarato, non un coefficiente balistico. Non tutte le marche pubblicano una percentuale direttamente confrontabile: per i modelli non elencati inserisci soltanto un dato verificato. <a href="https://www.uukha.com/en/limbs/target" target="_blank" rel="noopener noreferrer">Uukha Target: fonte ufficiale ↗</a></p>
+          </div>
+
+          <div class="group">
+            <div class="group-title"><span class="dot" style="background:var(--gold)"></span>Parametri reali del tiro</div>
+            <div class="list">
+              <label><span id="actualWeightLabel">Potenza all’allungo (se misurata)</span><span>libbre rilevate con bilancino</span><input id="actualDrawWeight" type="number" inputmode="decimal" min="1" max="100" step="0.1" value="30"></label>
+              <label>Allungo AMO <span>pollici · misurato</span><input id="setupDrawLength" type="number" inputmode="decimal" min="10" max="40" step="0.25" value="28"></label>
+              <label class="checkbox-field"><span class="checkbox-line"><input id="measuredDrawWeight" type="checkbox"> Ho misurato la potenza all’allungo con il bilancino</span><span>Se non selezionato, il calcolatore parte dalla potenza nominale dei flettenti e stima la variazione con l’allungo.</span></label>
+              <label>Brace height <span>pollici</span><input id="braceHeight" type="number" inputmode="decimal" min="2" max="15" step="0.1" value="8.5"></label>
+              <label>Materiale corda <span>Se noto</span>
+                <select id="stringMaterial"><option value="fastflight">Fast Flight / moderno</option><option value="dacron">Dacron</option><option value="other">Altro / non noto</option></select>
+              </label>
+              <label>Rilascio <span>Influenza l'interpretazione</span>
+                <select id="releaseType"><option value="fingers" selected>Dita</option><option value="mechanical">Sgancio meccanico</option><option value="other">Altro / non noto</option></select>
+              </label>
+              <label>Uso principale <span>Per organizzare le sessioni</span>
+                <select id="shootingUse"><option value="indoor">Indoor · 18 m</option><option value="outdoor">Outdoor · tiro alla distanza</option><option value="field">Field / campagna</option><option value="3d">3D / percorso</option><option value="target">Bersaglio · altra distanza</option></select>
+              </label>
+            </div>
+          </div>
+
+          <div class="group">
+            <div class="group-title"><span class="dot" style="background:var(--gold)"></span>Stabilizzazione, pesi e smorzatori</div>
+            <div class="list">
+              <label>Configurazione di stabilizzazione <span>Tipo montato sull'arco</span>
+                <select id="stabilizerSetup">
+                  <option value="none" selected>Nessuna / non specificata</option><option value="barebow-weight">Peso sul riser · arco nudo</option><option value="olympic-center">Stabilizzatore centrale · olimpico</option><option value="olympic-full">Centrale + laterali / V-bar</option><option value="compound-full">Stabilizzazione compound</option><option value="traditional">Pesi/smorzatori su tradizionale</option><option value="custom">Configurazione personalizzata</option>
+                </select>
+              </label>
+              <label>Pesi aggiuntivi sul riser <span>grammi totali</span><input id="riserAddedWeight" type="number" inputmode="decimal" min="0" max="10000" step="5" value="0"></label>
+              <label>Massa stabilizzatori <span>grammi totali, se presenti</span><input id="stabilizerWeight" type="number" inputmode="decimal" min="0" max="10000" step="5" value="0"></label>
+              <label>Numero smorzatori <span>tutti quelli montati</span><input id="damperCount" type="number" inputmode="numeric" min="0" max="20" step="1" value="0"></label>
+              <label>Massa smorzatori <span>grammi complessivi</span><input id="damperWeight" type="number" inputmode="decimal" min="0" max="5000" step="1" value="0"></label>
+            </div>
+            <p class="group-foot">Pesi, stabilizzatori e smorzatori possono cambiare massa, bilanciamento, vibrazioni, reazione dell'arco e ripetibilità del gesto. Sono registrati come contesto tecnico: il modello di volo non li trasforma direttamente in una velocità o in una correzione di traiettoria.</p>
+          </div>
+
+          <div class="equipment-actions">
+            <button class="primary-button" id="saveEquipment" type="button">Salva configurazione</button>
+            <button class="secondary-button" id="loadEquipment" type="button">Carica salvata</button>
+          </div>
+          <p id="equipmentSaveStatus" class="save-status" aria-live="polite">Il profilo resta su questo dispositivo.</p>
+        </div>
+
+        <aside class="col sticky-col">
+          <div class="card setup-summary" aria-live="polite">
+            <span class="kicker">PROFILO ATTIVO</span>
+            <div class="summary-row">
+              <div><small>Lunghezza arco stimata</small><strong id="overallBowLength">68″</strong></div>
+              <div><small>Profilo</small><strong id="bowProfileSummary">Arco nudo · ricurvo</strong></div>
+            </div>
+            <p id="equipmentAdvice" class="muted">La potenza in libbre descrive il carico; per stimare la velocità in modo attendibile serve una misura al cronografo.</p>
+          </div>
+          <div class="card flow-card">
+            <h3>La configurazione alimenta i calcoli</h3>
+            <ol class="flow-steps">
+              <li><span class="row-icon bg-blue">1</span><div><strong>Arco</strong><p>Disciplina, riser, flettenti, potenza e modalità di rilascio.</p></div></li>
+              <li><span class="row-icon bg-gold">2</span><div><strong>Freccia</strong><p>Materiale, spine, lunghezza, punta, inserto, cocca e impennaggio.</p></div></li>
+              <li><span class="row-icon bg-teal">3</span><div><strong>Velocità</strong><p>La velocità stimata è predefinita; se hai una misura al cronografo, selezionala per sostituire la stima.</p></div></li>
+            </ol>
+            <p class="note"><strong>Nota di metodo.</strong> La scheda attrezzatura organizza i parametri e fornisce contesto alle prove. Il modello di traiettoria resta una simulazione semplificata: non ricava una velocità precisa dal solo tipo di arco o dalle libbre.</p>
+            <div class="profile-actions">
+              <button class="primary-button" type="button" id="goArrowPanel">Continua: configura la freccia →</button>
+              <button class="secondary-button" type="button" id="goTrajectoryPanel">Vai alla traiettoria ↗</button>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- 01 · FRECCIA -->
+    <section class="panel" id="panel-arrow" aria-label="Freccia">
+      <div class="section-heading">
+        <span class="eyebrow">ARROW BUILD</span>
+        <h2>Peso e baricentro</h2>
+        <p>Inserisci il peso di ogni componente. Il peso dell'inserto è separato da quello della punta.</p>
+      </div>
+      <div class="split">
+        <div class="col">
+          <div class="group">
+            <div class="group-title"><span class="dot"></span>Identifica la tua freccia</div>
+            <div class="list">
+              <label>Materiale asta <span>Tipo di shaft</span>
+                <select id="shaftMaterial"><option value="carbon" selected>Carbonio</option><option value="aluminum">Alluminio</option><option value="al-carbon">Alluminio / carbonio</option><option value="wood">Legno</option><option value="other">Altro</option></select>
+              </label>
+              <label>Spine nominale <span>Valore stampato / dichiarato</span><input id="spineValue" type="text" maxlength="32" value="600" placeholder="Es. 600, 500, 3-18"></label>
+              <label class="field-span-2">Marca e modello asta <span>Facoltativo</span><input id="shaftModel" type="text" maxlength="100" value="DK Panther ID 6.2" placeholder="Es. marca, modello, diametro interno"></label>
+              <label>Tipo impennaggio <span>Forma/materiale principale</span>
+                <select id="fletchType">
+                  <option value="plastic_standard" selected>Alette plastiche standard</option><option value="plastic_low">Alette plastiche low-profile</option><option value="plastic_high">Alette grandi / elicoidali</option><option value="feather_low">Piume naturali basse</option><option value="feather_standard">Piume naturali standard</option><option value="feather_high">Piume alte / elicoidali</option><option value="spinwing">Spin-Wing / film leggero</option><option value="none">Nessun impennaggio</option>
+                </select>
+              </label>
+              <label>Tipo punta <span>Tipo geometrico</span>
+                <select id="tipType"><option value="field" selected>Field / bersaglio</option><option value="target">Target a profilo basso</option><option value="mechanical">Meccanica</option><option value="fixedCompact">Fissa compatta</option><option value="fixedLarge">Fissa grande</option><option value="blunt">Blunt / altro</option></select>
+              </label>
+              <label>Tipo cocca <span>Compatibilità e forma</span>
+                <select id="nockType"><option value="pin" selected>Pin nock (es. Beiter)</option><option value="standard">Inseribile standard</option><option value="overnock">Overnock / tradizionale</option><option value="other">Altro / non noto</option></select>
+              </label>
+              <label>Sistema posteriore <span>Per evitare doppi conteggi</span>
+                <select id="rearAssembly"><option value="separate" selected>Pin e cocca separati</option><option value="integrated">Cocca con pin integrato / peso unico</option></select>
+              </label>
+              <label>Uso freccia <span>Per annotare il setup</span>
+                <select id="arrowUse"><option value="indoor" selected>Indoor · 18 m</option><option value="outdoor">Outdoor · distanza</option><option value="field">Field</option><option value="3d">3D</option><option value="training">Allenamento / test</option></select>
+              </label>
+            </div>
+          </div>
+
+          <div class="group">
+            <div class="group-title"><span class="dot" style="background:var(--gold)"></span>Componenti e masse</div>
+            <div class="list">
+              <label class="weight-unit-choice">Unità dei pesi <span>Grani o grammi: i valori vengono convertiti automaticamente</span>
+                <select id="weightInputUnit"><option value="gr" selected>Grani (gr)</option><option value="g">Grammi (g)</option></select>
+              </label>
+              <label>Lunghezza asta <span>pollici</span><input id="arrowLength" type="number" inputmode="decimal" min="1" max="40" step="0.1" value="32"></label>
+              <label>Peso lineare asta (GPI) <span>grani/pollice · dato del produttore</span><input id="gpi" type="number" inputmode="decimal" min="0.1" max="20" step="0.01" value="4.8"></label>
+              <label>Peso asta misurato <span class="weight-unit-label">grani · facoltativo, prevale sul GPI</span><input id="shaftWeightMeasured" class="grain-input" type="number" inputmode="decimal" min="0" max="1000" step="0.1" value="0"><small class="unit-conversion" id="shaftWeightMeasuredGrams">0 g · 0 = calcolo GPI</small></label>
+              <label>Punta <span class="weight-unit-label">grani</span><input id="pointWeight" class="grain-input" type="number" inputmode="decimal" min="0" max="500" step="0.1" value="80"><small class="unit-conversion" id="pointWeightGrams">≈ 5,18 g</small></label>
+              <label>Inserto <span class="weight-unit-label">grani</span><input id="insertWeight" class="grain-input" type="number" inputmode="decimal" min="0" max="300" step="0.1" value="20"><small class="unit-conversion" id="insertWeightGrams">≈ 1,30 g</small></label>
+              <label>Cocca <span class="weight-unit-label">grani</span><input id="nockWeight" class="grain-input" type="number" inputmode="decimal" min="0" max="100" step="0.1" value="2"><small class="unit-conversion" id="nockWeightGrams">≈ 0,13 g</small></label>
+              <label>Peso pin <span class="weight-unit-label">grani · 0 se integrato</span><input id="pinWeight" class="grain-input" type="number" inputmode="decimal" min="0" max="100" step="0.1" value="20.6"><small class="unit-conversion" id="pinWeightGrams">≈ 1,33 g</small></label>
+              <label>Peso impennaggio completo <span class="weight-unit-label">grani</span><input id="fletchingSetWeight" class="grain-input" type="number" inputmode="decimal" min="0" max="100" step="0.1" value="8"><small class="unit-conversion" id="fletchingSetWeightGrams">≈ 0,52 g · totale 3 pezzi</small><small class="field-help">Valore indicativo complessivo per 3 alette/piume, Wrap o nastro incluso. Modificalo se conosci il peso reale.</small></label>
+              <label>Numero alette/piume <span>pezzi</span>
+                <select id="vaneCount"><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option><option value="0">Nessuna</option></select>
+              </label>
+              <label>Diametro esterno asta <span>pollici</span><input id="shaftDiameter" type="number" inputmode="decimal" min="0.05" max="1" step="0.001" value="0.281"></label>
+            </div>
+            <p class="group-foot">I dati iniziali sono soltanto un esempio modificabile. Inserisci i valori del produttore e la lunghezza reale della freccia finita; la spine nominale descrive l’asta, ma non entra direttamente nel calcolo del FOC. Per il profilo d’esempio DK Panther ID 6.2 spine 600, l’ID è interno; il diametro esterno pubblicato è 7,14 mm (circa 0,281″). Non confondere ID e diametro esterno usato per il drag.</p>
+          </div>
+
+          <div class="group arrow-archive">
+            <div class="group-title"><span class="dot" style="background:var(--indigo)"></span>Archivio frecce</div>
+            <div class="list">
+              <label class="field-span-2">Nome della configurazione <span>Un nome riconoscibile</span><input id="arrowProfileName" type="text" maxlength="80" value="DK Panther · Indoor 18 m" placeholder="Es. VAP V1 · Outdoor 50 m"></label>
+              <label class="field-span-2">Frecce salvate <span>Seleziona una configurazione</span><select id="arrowProfileSelect"><option value="">Nessuna configurazione salvata</option></select></label>
+            </div>
+            <div class="equipment-actions arrow-profile-actions">
+              <button class="primary-button" id="saveArrowProfile" type="button">Salva come nuova</button>
+              <button class="secondary-button" id="updateArrowProfile" type="button">Aggiorna selezionata</button>
+              <button class="secondary-button" id="loadArrowProfile" type="button">Carica selezionata</button>
+              <button class="secondary-button" id="duplicateArrowProfile" type="button">Duplica</button>
+              <button class="secondary-button danger" id="deleteArrowProfile" type="button">Elimina</button>
+              <button class="secondary-button" id="exportArrowProfiles" type="button">Esporta archivio</button>
+              <button class="secondary-button" id="importArrowProfiles" type="button">Importa archivio</button>
+              <input id="importArrowProfilesFile" type="file" accept="application/json,.json" hidden>
+            </div>
+            <p id="arrowSaveStatus" class="save-status group-foot" aria-live="polite">Puoi salvare più tipi di freccia su questo dispositivo.</p>
+          </div>
+        </div>
+
+        <aside class="col sticky-col">
+          <div class="card result-card">
+            <h3>Risultati della freccia</h3>
+            <div class="metric-grid">
+              <div class="metric"><span>Peso totale</span><strong id="totalGrains">—</strong><small id="totalGrams">—</small></div>
+              <div class="metric metric-highlight"><span>FOC teorico</span><strong id="foc">—</strong><small>metodo semplificato</small></div>
+              <div class="metric"><span>Centro di gravità</span><strong id="cg">—</strong><small>dal fondo cocca</small></div>
+              <div class="metric"><span>Peso asta</span><strong id="shaftWeight">—</strong><small id="shaftWeightMethod">lunghezza × GPI</small></div>
+            </div>
+            <div class="balance-visual">
+              <div class="visual-heading">
+                <div><h4 id="balanceTitle">Baricentro sulla freccia</h4><p class="muted">Posizione calcolata dal fondo della cocca</p></div>
+                <span class="pill tint" id="cgPositionLabel">—</span>
+              </div>
+              <div class="arrow-graphic" id="arrowBalanceGraphic" role="img" aria-label="Schema della freccia con centro geometrico e baricentro calcolato"></div>
+              <div class="graphic-legend"><span><i class="legend-dot midpoint-dot"></i>Centro geometrico (50%)</span><span><i class="legend-dot cg-dot"></i>Baricentro calcolato</span></div>
+            </div>
+            <div class="foc-visual">
+              <div class="visual-heading">
+                <div><h4>FOC · Front of Center</h4><p class="muted">Quanto il baricentro è avanzato rispetto al centro geometrico</p></div>
+                <strong class="foc-value" id="focGaugeValue">—</strong>
+              </div>
+              <div class="foc-gauge" id="focGauge" role="img" aria-label="Indicatore grafico del FOC da meno 10 a più 30 per cento">
+                <div class="foc-gauge-track"></div>
+                <div class="foc-gauge-zero"></div>
+                <div class="foc-gauge-marker" id="focGaugeMarker"></div>
+                <div class="foc-gauge-ticks"><span>-10%</span><span>0%</span><span>10%</span><span>20%</span><span>30%</span></div>
+              </div>
+              <p class="foc-description muted" id="focDescription">Il FOC si aggiorna automaticamente quando modifichi i componenti.</p>
+            </div>
+            <div class="weight-bar-wrap">
+              <div class="weight-bar-label"><span>Composizione del peso</span><span id="weightBarSummary"></span></div>
+              <div class="stacked-bar" id="weightBar" aria-label="Composizione del peso della freccia"></div>
+              <div class="legend" id="weightLegend"></div>
+            </div>
+            <div class="formula-box">
+              <strong>Formula peso totale</strong>
+              <code>(peso asta misurato, se inserito; altrimenti lunghezza × GPI) + punta + inserto + pin + cocca + impennaggio completo (incluso Wrap)</code>
+              <small>Il peso del pin viene sommato se separato. Se il sistema cocca-pin è integrato, seleziona “peso unico” e inserisci il peso complessivo nel campo Cocca, lasciando Pin a zero. Il peso dell’impennaggio comprende già le 3 alette/piume e il Wrap; con 4 o 5 pezzi il valore viene proporzionato automaticamente. Le conversioni in grammi sono mostrate accanto a ogni campo.</small>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- 02 · BALISTICA -->
+    <section class="panel" id="panel-ballistics" aria-label="Balistica">
+      <div class="section-heading">
+        <span class="eyebrow">ENERGIA E QUANTITÀ DI MOTO</span>
+        <h2>Balistica della freccia</h2>
+        <p>Inserisci una velocità misurata al cronografo per risultati più attendibili.</p>
+      </div>
+      <div class="split">
+        <div class="col">
+          <div class="group">
+            <div class="group-title"><span class="dot"></span>Velocità iniziale</div>
+            <div class="list">
+              <label>Origine del dato <span>Da dichiarare per leggere il risultato</span>
+                <select id="velocitySource">
+                  <option value="estimated" selected>Stimata dall’attrezzatura (predefinita)</option>
+                  <option value="measured">Misurata al cronografo</option>
+                  <option value="manual">Velocità inserita manualmente</option>
+                  <option value="ibo">Stima IBO · solo compound</option>
+                </select>
+              </label>
+              <label><span id="measuredSpeedLabel" class="field-title">Velocità inserita</span><span>fps · piedi al secondo</span><input id="measuredSpeed" type="number" inputmode="decimal" min="1" max="1200" step="1" value="180" disabled></label>
+            </div>
+          </div>
+          <div id="velocitySourceNotice" class="status-message warn">La velocità è stimata dall’attrezzatura. Puoi sostituirla con una misura al cronografo.</div>
+          <details class="disclosure" id="iboDetails">
+            <summary>Come funziona la stima IBO (compound)</summary>
+            <div class="disclosure-body card">
+              <p class="field-help">Usa la potenza di picco, l’allungo e il rating IBO inseriti nella scheda Attrezzatura, oltre al peso totale della freccia. È una stima semplificata, non una misura; non viene applicata a ricurvo, arco nudo o longbow.</p>
+              <p class="mini-result">Velocità stimata IBO: <strong id="iboResult">—</strong></p>
+              <button class="secondary-button" id="useIboSpeed" type="button">Usa la stima IBO come velocità</button>
+            </div>
+          </details>
+        </div>
+        <aside class="col">
+          <div class="card result-card">
+            <h3>Risultati alla partenza</h3>
+            <div class="metric-grid">
+              <div class="metric metric-highlight"><span>Energia cinetica</span><strong id="kineticEnergy">—</strong><small>ft·lbf</small></div>
+              <div class="metric"><span>Quantità di moto</span><strong id="momentum">—</strong><small>slug·ft/s</small></div>
+              <div class="metric"><span>Velocità</span><strong id="speedMetric">—</strong><small>m/s equivalenti</small></div>
+              <div class="metric"><span>Massa freccia</span><strong id="massGrams">—</strong><small>grammi</small></div>
+            </div>
+            <div class="formula-box">
+              <strong>Formule</strong>
+              <code>KE = peso(grani) × velocità(fps)² / 450240</code>
+              <code>p = peso(grani) × velocità(fps) / 225218</code>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- 03 · ARIA -->
+    <section class="panel" id="panel-air" aria-label="Aria e drag">
+      <div class="section-heading">
+        <span class="eyebrow">CONDIZIONI AMBIENTALI</span>
+        <h2>Densità dell'aria e resistenza</h2>
+        <p>La densità varia con temperatura e altitudine. Il coefficiente totale è una stima utile per confronti, non un dato certificato della freccia.</p>
+      </div>
+      <div class="split">
+        <div class="col">
+          <div class="group">
+            <div class="group-title"><span class="dot" style="background:var(--teal)"></span>Condizioni meteo</div>
+            <div class="list">
+              <label>Altitudine <span>metri s.l.m.</span><input id="altitude" type="number" inputmode="decimal" min="-500" max="9000" step="10" value="0"></label>
+              <label>Temperatura <span>°C</span><input id="temperature" type="number" inputmode="decimal" min="-50" max="60" step="1" value="15"></label>
+            </div>
+          </div>
+          <div class="group">
+            <div class="group-title"><span class="dot" style="background:var(--indigo)"></span>Coefficienti di resistenza (Cd)</div>
+            <div class="list">
+              <label>Asta + cocca <span>Cd</span><input id="cdShaft" type="number" inputmode="decimal" min="0" max="10" step="0.1" value="1.3"></label>
+              <label>Impennaggio <span>profilo</span>
+                <select id="fletchProfile">
+                  <option value="0.6">Plastica — basso/profilo target (0,60)</option>
+                  <option value="1.8" selected>Plastica — standard 2" (1,80)</option>
+                  <option value="2.4">Plastica — alto / 3–4" (2,40)</option>
+                  <option value="0.75">Piuma naturale — basso (0,75)</option>
+                  <option value="2.2">Piuma naturale — standard (2,20)</option>
+                  <option value="3">Piuma naturale — alto / elicoidale (3,00)</option>
+                </select>
+              </label>
+              <label>Punta <span>tipo</span>
+                <select id="tipCd"><option value="0" selected>Punta da campo (0,00)</option><option value="0.2">Meccanica (0,20)</option><option value="1.2">Fissa compatta (1,20)</option><option value="2.8">Fissa grande (2,80)</option></select>
+              </label>
+            </div>
+            <p class="group-foot">Il contributo dell'impennaggio è moltiplicato per 1,33 quando selezioni 4 alette. La tabella Cd è quella riportata nella documentazione di riferimento.</p>
+          </div>
+        </div>
+        <aside class="col">
+          <div class="card result-card">
+            <h3>Risultati ambientali</h3>
+            <div class="metric-grid">
+              <div class="metric metric-highlight"><span>Densità aria</span><strong id="airDensity">—</strong><small>kg/m³</small></div>
+              <div class="metric"><span>Pressione stimata</span><strong id="airPressure">—</strong><small>hPa</small></div>
+              <div class="metric"><span>Cd impennaggio</span><strong id="cdFletchResult">—</strong><small>corretto per numero</small></div>
+              <div class="metric"><span>Cd totale</span><strong id="cdTotal">—</strong><small>asta + piume/alette + punta</small></div>
+            </div>
+            <div class="formula-box">
+              <strong>Densità dell'aria</strong>
+              <code>ρ = P × M / (R × T)</code>
+              <small>Pressione stimata con il modello ISA standard; temperatura inserita in °C e convertita in kelvin.</small>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- 04 · TRAIETTORIA -->
+    <section class="panel" id="panel-trajectory" aria-label="Traiettoria">
+      <div class="section-heading">
+        <span class="eyebrow">SIMULAZIONE NUMERICA</span>
+        <h2>Traiettoria con metodo RK4</h2>
+        <p>Stima teorica del volo con gravità, resistenza aerodinamica e vento. Non sostituisce l'accordatura reale o la verifica al campo.</p>
+      </div>
+      <div class="card chart-card">
+        <div class="chart-heading">
+          <div><span class="kicker">FLIGHT PATH · SIMULAZIONE RK4</span><h3>Il volo, frame per frame</h3></div>
+          <button class="btn glassy motion-button" id="playTrajectory" type="button" disabled>▶ Anima la freccia</button>
+        </div>
+        <p id="trajectoryContext" class="muted">Seleziona l’attrezzatura, inserisci la velocità e calcola la traiettoria per avviare l’animazione.</p>
+        <div id="trajectoryChart" class="chart-area"><div class="empty-chart">Premi “Calcola traiettoria”: la freccia attraverserà il grafico con un’animazione.</div></div>
+        <div class="graphic-legend"><span><i class="legend-dot legend-trajectory"></i>Curva stimata</span><span><i class="legend-dot legend-arrow"></i>Posizione animata</span><span><i class="legend-dot legend-target"></i>Altezza bersaglio</span></div>
+      </div>
+      <div class="split" style="margin-top:22px">
+        <div class="col">
+          <div class="group">
+            <div class="group-title"><span class="dot"></span>Parametri del tiro</div>
+            <div class="list">
+              <label>Distanza del bersaglio <span>metri lungo la linea di tiro</span><input id="targetDistance" type="number" inputmode="decimal" min="1" max="150" step="1" value="18"></label>
+              <label>Pendenza tiro <span>gradi · + in salita, − in discesa</span><input id="slopeAngle" type="number" inputmode="decimal" min="-60" max="60" step="0.5" value="0"></label>
+              <label>Velocità iniziale <span>fps · dalla scheda Balistica</span><input id="trajectorySpeed" type="number" inputmode="decimal" min="1" max="1200" step="1" value="180"></label>
+              <label class="checkbox-field"><span class="checkbox-line"><input id="syncTrajectorySpeed" type="checkbox" checked> Usa la velocità della scheda Balistica</span><span>Disattiva per provare uno scenario con una velocità diversa.</span></label>
+              <label>Vento <span>m/s</span><input id="windSpeed" type="number" inputmode="decimal" min="0" max="40" step="0.5" value="0"></label>
+              <label>Direzione vento in pianta <span>0° coda · 90° da sinistra · 180° frontale</span><input id="windDirection" type="number" inputmode="decimal" min="0" max="359" step="5" value="90"></label>
+              <label>Diametro asta <span>pollici</span><input id="trajectoryDiameter" type="number" inputmode="decimal" min="0.05" max="1" step="0.001" value="0.281"></label>
+            </div>
+            <p class="group-foot">Il calcolo risolve l’angolo teorico necessario a raggiungere l’altezza del bersaglio nel modello. Il vento è costante e la resistenza è un’approssimazione: il grafico è illustrativo, non una previsione certificata di impatto.</p>
+          </div>
+          <div class="simulation-actions">
+            <button class="primary-button" id="runSimulation" type="button">Calcola traiettoria</button>
+            <button class="secondary-button" id="useArrowValues" type="button">Sincronizza freccia e velocità</button>
+          </div>
+        </div>
+        <aside class="col">
+          <div class="card result-card">
+            <h3>Risultati della simulazione</h3>
+            <div id="simulationMessage" class="status-message">Premi “Calcola traiettoria” per avviare la simulazione.</div>
+            <div class="metric-grid">
+              <div class="metric metric-highlight"><span>Angolo di lancio</span><strong id="launchAngle">—</strong><small>gradi sopra l'orizzontale</small></div>
+              <div class="metric"><span>Tempo di volo</span><strong id="flightTime">—</strong><small>secondi</small></div>
+              <div class="metric"><span>Deriva laterale</span><strong id="lateralDrift">—</strong><small>cm</small></div>
+              <div class="metric"><span>KE all'arrivo</span><strong id="impactKE">—</strong><small>ft·lbf</small></div>
+              <div class="metric"><span>Velocità all'arrivo</span><strong id="impactSpeed">—</strong><small>m/s</small></div>
+              <div class="metric"><span>Altezza bersaglio</span><strong id="targetHeight">—</strong><small>m rispetto al punto di lancio</small></div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="alert-card disclaimer" style="margin-top:30px">
+      <strong>Nota tecnica</strong>
+      Questa è un'implementazione autonoma delle formule matematiche descritte nella documentazione pubblica di DO ARCHERY, non il software originale. I coefficienti aerodinamici sono approssimazioni; la formula IBO è pensata per archi compound e non va usata per stimare il tuo arco nudo. I risultati di traiettoria dipendono dai parametri inseriti e devono essere considerati indicativi.
+      <p style="margin-top:8px">Riferimento: <a href="https://do-archery.com/pages/archery-ballistics-math" target="_blank" rel="noopener noreferrer">DO ARCHERY — Archery Ballistics Math ↗</a></p>
+    </section>
+  </main>
+
+  <footer class="app-footer"><span>Archery Lab · Calcoli locali nel browser · v1.9.6 RC</span></footer>
+</div>
+<script src="../js/shell.js"></script>
+<script src="app.js"></script>
+<script src="../js/i18n.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Analisi della Rosata — Archery Lab</title>
+<meta name="description" content="Analisi della rosata: centratura, dispersione orizzontale e verticale in millimetri.">
+<meta name="theme-color" content="#eef1f6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#05070b" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Archery Lab">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap">
+<link rel="stylesheet" href="../css/glass.css">
+<link rel="stylesheet" href="../css/pages.css">
+</head>
+<body data-tab="rosata" data-root="../">
+<a class="skip" href="#main">Vai al contenuto</a>
+<div class="app">
+  <header class="navbar">
+    <div class="nav-left"><a class="nav-btn icon glass" href="../index.html" aria-label="Torna alla Home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></a></div>
+    <div class="nav-title">Analisi della Rosata</div>
+    <div class="nav-right"><span id="sourceStatus" class="pill tint status">Pronto</span></div>
+  </header>
+
+  <main id="main">
+    <div class="large-title">
+      <span class="eyebrow">GROUP ANALYSIS · BETA</span>
+      <h1>Analisi della Rosata</h1>
+      <p>Misura centratura e dispersione del gruppo, senza confonderle con il test della spennata.</p>
+    </div>
+
+    <div class="card intro-card">
+      <h3>Una rosata, due letture</h3>
+      <p class="muted">Il baricentro indica dove si concentra il gruppo; la dispersione indica quanto gli impatti sono sparsi. Una rosata compatta può essere fuori centro: per questo i risultati sono separati.</p>
+      <p class="notice">Gli impatti importati da Spennata Lab includono soltanto le frecce impennate. Le spennate restano escluse e non vengono cancellate dal test originale.</p>
+    </div>
+
+    <section class="section">
+      <div class="split">
+        <div class="col">
+          <div class="group">
+            <div class="group-title"><span class="dot"></span>Sessione</div>
+            <div class="list">
+              <label>Distanza
+                <select id="distance"><option value="18">18 m</option><option value="25">25 m</option><option value="30">30 m</option><option value="40">40 m</option><option value="50">50 m</option><option value="60">60 m</option><option value="70">70 m</option><option value="90">90 m</option></select>
+              </label>
+              <label class="field-span-2">Formato / regolamento
+                <select id="targetRule">
+                  <option value="fitarco-indoor" selected>Indoor FITARCO / WA (18 o 25 m)</option>
+                  <option value="fitarco-outdoor">Outdoor FITARCO — diametro secondo classe e divisione</option>
+                  <option value="wa-barebow-outdoor">Outdoor World Archery — Arco Nudo</option>
+                  <option value="manual">Manuale / allenamento</option>
+                </select>
+              </label>
+              <label>Diametro bersaglio <span>cm</span><input id="faceDiameter" type="number" inputmode="numeric" min="10" max="200" step="1" value="40"></label>
+              <label class="field-span-2">Nome sessione <span>facoltativo</span><input id="sessionName" type="text" maxlength="80" placeholder="Es. allenamento 18 m"></label>
+            </div>
+            <p id="targetRuleNote" class="group-foot" aria-live="polite">Bersaglio suggerito: 40 cm. Conferma il formato effettivo della gara se sono previste visuali speciali.</p>
+          </div>
+
+          <div class="card target-card">
+            <div class="card-head"><div><span class="kicker">BERSAGLIO</span><h3>Tocca per registrare un impatto</h3></div></div>
+            <div class="target-wrap">
+              <svg id="target" viewBox="0 0 440 440" role="img" aria-label="Bersaglio interattivo con punti d'impatto"><rect x="20" y="20" width="400" height="400" rx="16" class="target-bg"/><g id="rings"></g><line x1="220" y1="30" x2="220" y2="410" stroke="#8a97a8" stroke-dasharray="4 5"/><line x1="30" y1="220" x2="410" y2="220" stroke="#8a97a8" stroke-dasharray="4 5"/><g id="points"></g><g id="centroid"></g></svg>
+            </div>
+            <div class="graphic-legend"><span><i class="legend-dot" style="background:#1976d2"></i> Impatti</span><span><i class="legend-dot" style="background:#d97706"></i> Baricentro</span><span><i class="legend-dot" style="background:#e5484d"></i> Centro bersaglio</span></div>
+            <p class="micro-note">Centro bersaglio = (0,0). X positivo verso destra, Y positivo verso l'alto. Le statistiche sono calcolate sulle coordinate registrate; cambiare distanza non modifica gli impatti. La visualizzazione è indicativa e usa il diametro inserito per la scala.</p>
+          </div>
+        </div>
+
+        <aside class="col">
+          <div class="card impact-list">
+            <div class="card-head"><div><span class="kicker">REGISTRO</span><h3>Impatti registrati</h3></div><span class="pill tint" id="count">0</span></div>
+            <div id="impactRows" class="rows"><p class="muted">Nessun impatto ancora inserito.</p></div>
+            <div class="actions">
+              <button id="undo" class="secondary" type="button">Annulla ultimo</button>
+              <button id="clear" class="secondary" type="button">Svuota sessione</button>
+              <button id="export" class="secondary" type="button">Esporta CSV</button>
+            </div>
+            <p id="message" class="message" aria-live="polite"></p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="stats-title">
+      <div class="section-head"><span class="eyebrow">STATISTICHE</span><h2 id="stats-title">Il gruppo in millimetri</h2></div>
+      <div class="stats-grid">
+        <div class="stat metric-highlight"><span>Scostamento baricentro</span><strong id="centroidOffset">—</strong><small id="centroidDirection">Dal centro del bersaglio</small></div>
+        <div class="stat"><span>Dispersione orizzontale</span><strong id="spreadX">—</strong><small>Intervallo X (max − min)</small></div>
+        <div class="stat"><span>Dispersione verticale</span><strong id="spreadY">—</strong><small>Intervallo Y (max − min)</small></div>
+        <div class="stat"><span>Dispersione RMS</span><strong id="rms">—</strong><small>Distanza quadratica media dal baricentro</small></div>
+        <div class="stat"><span>Diametro massimo gruppo</span><strong id="maxSpread">—</strong><small>Distanza fra i due impatti più lontani</small></div>
+        <div class="stat"><span>Numero impatti</span><strong id="n">0</strong><small>Campione analizzato</small></div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="read-title">
+      <div class="card">
+        <h3 id="read-title">Come leggere i risultati</h3>
+        <ul class="reading-list">
+          <li><strong>Centratura:</strong> lo scostamento del baricentro descrive la posizione media rispetto al centro di mira.</li>
+          <li><strong>Dispersione X/Y:</strong> misura l'ampiezza del gruppo sui due assi, in millimetri.</li>
+          <li><strong>RMS:</strong> misura la distanza tipica degli impatti dal baricentro; più basso significa gruppo più compatto, a parità di condizioni.</li>
+          <li><strong>Diametro massimo:</strong> distanza tra la coppia di impatti più lontana.</li>
+        </ul>
+        <p class="notice">Queste misure descrivono i punti inseriti, non diagnosticano da sole un errore tecnico. Confronta sessioni svolte a distanza, bersaglio e condizioni simili.</p>
+        <div class="actions">
+          <button id="saveSession" class="primary" type="button">Salva riepilogo su questo dispositivo</button>
+          <button id="showHistory" class="secondary" type="button">Mostra storico salvato</button>
+        </div>
+        <div id="history" class="history" hidden></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer"><span>Archery Lab · Analisi della Rosata · v1.9.6 RC</span></footer>
+</div>
+<script src="../js/shell.js"></script>
+<script src="app.js"></script>
+<script src="../js/i18n.js" defer></script>
+</body>
+</html>

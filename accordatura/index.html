@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Accordatura guidata — Archery Lab</title>
+<meta name="description" content="Accordatura guidata del tiro con l'arco: controlli ordinati, una variabile per volta e verifiche diverse in base all'arco.">
+<meta name="theme-color" content="#eef1f6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#05070b" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Archery Lab">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap">
+<link rel="stylesheet" href="../css/glass.css">
+<link rel="stylesheet" href="../css/pages.css">
+</head>
+<body data-tab="altro" data-root="../">
+<a class="skip" href="#main">Vai al contenuto</a>
+<div class="app">
+  <header class="navbar">
+    <div class="nav-left"><a class="nav-btn glass" href="../altro/index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg>Altro</a></div>
+    <div class="nav-title">Accordatura guidata</div>
+    <div class="nav-right"></div>
+  </header>
+
+  <main id="main">
+    <div class="large-title">
+      <span class="eyebrow">TUNING GUIDE · PROCEDURA GUIDATA</span>
+      <h1>Accorda con metodo. <em>Una variabile alla volta.</em></h1>
+      <p>Una checklist per preparare il test, leggere prima i controlli fondamentali e procedere senza confondere un problema tecnico con un errore di esecuzione. Le regolazioni suggerite sono verifiche da svolgere, non prescrizioni automatiche.</p>
+    </div>
+
+    <div class="split">
+      <div class="col">
+        <div class="group">
+          <div class="group-title"><span class="dot"></span>Adatta il percorso al tuo arco</div>
+          <div class="list">
+            <label for="tuningBow">Tipo di arco
+              <select id="tuningBow">
+                <option value="barebow">Arco nudo / ricurvo a dita</option>
+                <option value="olympic">Ricurvo olimpico a dita</option>
+                <option value="traditional">Longbow / tradizionale a dita</option>
+                <option value="compound">Compound con sgancio meccanico</option>
+                <option value="other">Altro / non noto</option>
+              </select>
+            </label>
+            <label for="tuningStage">Fase del lavoro
+              <select id="tuningStage">
+                <option value="baseline">Controllo iniziale</option>
+                <option value="vertical">Verifica verticale</option>
+                <option value="horizontal">Verifica orizzontale</option>
+                <option value="final">Verifica finale</option>
+              </select>
+            </label>
+          </div>
+          <p class="group-foot">Seleziona disciplina e rilascio per visualizzare l’avvertenza più pertinente. La lettura orizzontale classica della spennata non si applica automaticamente a tutti i sistemi.</p>
+        </div>
+      </div>
+      <aside class="col">
+        <div class="card principle-card">
+          <span class="kicker">PRINCIPIO CENTRALE</span>
+          <strong class="big-figure">1 × 1</strong>
+          <p class="muted">Una modifica alla volta. Registra il risultato, ripeti il test e confronta gruppi sufficientemente ampi.</p>
+          <div id="tuningGuidance" class="status-message success" aria-live="polite">Prima stabilisci una base ripetibile: sicurezza, allineamento, attrezzatura integra e dati registrati.</div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="progress-card card" aria-live="polite">
+      <div><span class="kicker">AVANZAMENTO</span><strong id="tuningProgressLabel">0 di 18 controlli</strong></div>
+      <div class="progress-track"><span id="tuningProgressBar"></span></div>
+    </div>
+
+    <div class="tuning-steps" id="tuningChecks" data-persist="accordatura">
+      <section class="group">
+        <div class="group-title"><span class="step-n sm">1</span>Prima di tirare: sicurezza e stato dell'arco</div>
+        <div class="list checklist">
+          <label><input type="checkbox"> Aste integre, cocche e punte in buono stato; nessun danno visibile.</label>
+          <label><input type="checkbox"> Riser, flettenti, corda, serving e attacchi controllati.</label>
+          <label><input type="checkbox"> Brace height, tiller e allineamento misurati e annotati.</label>
+          <label><input type="checkbox"> Regolazioni dei flettenti entro i limiti del manuale specifico.</label>
+        </div>
+        <p class="group-foot">Spunta soltanto i controlli che hai davvero eseguito.</p>
+      </section>
+
+      <section class="group">
+        <div class="group-title"><span class="step-n sm">2</span>Registra il punto di partenza</div>
+        <div class="list checklist">
+          <label><input type="checkbox"> Potenza effettiva misurata all'allungo reale, non soltanto libbre stampate.</label>
+          <label><input type="checkbox"> Tipo, spine, lunghezza, punta e inserti delle frecce registrati.</label>
+          <label><input type="checkbox"> Punto d'incocco misurato con una squadra; bottone, rest e centratura annotati se presenti.</label>
+          <label><input type="checkbox"> Pesi sul riser, stabilizzatori e smorzatori annotati: stesso assetto durante il confronto.</label>
+          <label><input type="checkbox"> Distanza, punto di mira, vento, crawl e ancoraggio definiti.</label>
+        </div>
+        <p class="group-foot">Prima di intervenire, annota i valori correnti.</p>
+      </section>
+
+      <section class="group">
+        <div class="group-title"><span class="step-n sm">3</span>Controlla prima l'assetto verticale</div>
+        <div class="list checklist">
+          <label><input type="checkbox"> Ho registrato più frecce per entrambi i gruppi, non una sola.</label>
+          <label><input type="checkbox"> Ho controllato la quota d'incocco e l'eventuale contatto col rest/finestra.</label>
+          <label><input type="checkbox"> Ho modificato, se necessario, un solo parametro e l'ho rimisurato.</label>
+        </div>
+        <p class="group-foot">Se il test con frecce impennate e spennate è ripetibile, osserva la differenza fra i centri dei gruppi. Nei sistemi a dita, la posizione verticale può suggerire di verificare l'altezza d'incocco, ma non basta da sola a dimostrarne la causa. <a href="../spennata/index.html">Confronta i gruppi in Spennata Lab →</a></p>
+      </section>
+
+      <section class="group">
+        <div class="group-title"><span class="step-n sm">4</span>Valuta l'orizzontale in base al sistema</div>
+        <p id="horizontalGuidance" class="notice">Per arco nudo o ricurvo con rilascio dalle dita, lo scostamento orizzontale è un indizio da leggere insieme a spine dinamico, mano, bottone, centratura, grip, rilascio e clearance.</p>
+        <div class="list checklist">
+          <label><input type="checkbox"> Ho verificato che le frecce siano comparabili per modello, lunghezza, punta e massa.</label>
+          <label><input type="checkbox"> Ho controllato il bottone/center-shot e la clearance, dove applicabili.</label>
+          <label><input type="checkbox"> Non sto attribuendo automaticamente l'errore al solo spine.</label>
+        </div>
+      </section>
+
+      <section class="group">
+        <div class="group-title"><span class="step-n sm">5</span>Ripeti, confronta, documenta</div>
+        <div class="list checklist">
+          <label><input type="checkbox"> Ho annotato il valore prima e dopo la modifica.</label>
+          <label><input type="checkbox"> Ho ripetuto il test con le stesse condizioni e confronto gruppi/centri.</label>
+          <label><input type="checkbox"> Se il risultato è ambiguo, sono tornato alla configurazione base.</label>
+        </div>
+        <p class="group-foot">La modifica è utile solo se migliora il comportamento in prove ripetute senza peggiorare sicurezza, rosata o comportamento a un'altra distanza.</p>
+      </section>
+    </div>
+
+    <div class="btn-row" style="margin-top:22px">
+      <a class="btn filled" href="../spennata/index.html">Apri Spennata Lab ↗</a>
+      <a class="btn" href="../calcolatore/index.html">Configura attrezzatura</a>
+      <button class="btn glassy danger-text" type="button" id="resetTuningChecks">Azzera tutte le checklist</button>
+    </div>
+
+    <div class="alert-card" style="margin-top:26px"><strong>Avvertenza tecnica e di sicurezza</strong>Questa guida non sostituisce un tecnico o un istruttore qualificato. Non applicare numeri universali di giri a limb bolts, tiller o regolazioni di un compound: segui il manuale del modello esatto. Per compound con sgancio meccanico, usa una procedura specifica e non applicare automaticamente le regole orizzontali del rilascio con le dita.</div>
+  </main>
+  <footer class="app-footer"><span>Archery Lab · Accordatura guidata · Le spunte restano su questo dispositivo</span></footer>
+</div>
+<script src="../js/shell.js"></script>
+<script src="app.js"></script>
+<script src="../js/i18n.js" defer></script>
+</body>
+</html>

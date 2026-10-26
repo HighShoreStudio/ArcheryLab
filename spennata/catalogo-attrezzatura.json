@@ -1,0 +1,465 @@
+{
+  "version": "1.0",
+  "note": "Catalogo iniziale non esaustivo. Specifiche riferite alla variante indicata, fonte produttore collegata. Non usare dati di una spine per un'altra. Per modelli non presenti, inserire i valori manualmente.",
+  "arrows": [
+    {
+      "id": "dk-panther-id62",
+      "brand": "DK Bowfactory",
+      "model": "Panther ID 6.2",
+      "material": "Carbonio ad alto modulo",
+      "internalDiameterMm": 6.2,
+      "source": "https://dkbow.de/Pfeile/DK-Carbon-Arrows/DK-Panther-ID6.2/",
+      "note": "ID 6.2 è il diametro interno, non quello esterno. Valori esterni e GPI variano con la spine.",
+      "variants": [
+        {
+          "spine": "400",
+          "outerDiameterMm": 7.33,
+          "gpi": 7.25
+        },
+        {
+          "spine": "500",
+          "outerDiameterMm": 7.23,
+          "gpi": 6.1
+        },
+        {
+          "spine": "600",
+          "outerDiameterMm": 7.14,
+          "gpi": 4.8
+        },
+        {
+          "spine": "700",
+          "outerDiameterMm": 7.05,
+          "gpi": 4.5
+        },
+        {
+          "spine": "800",
+          "outerDiameterMm": 7.0,
+          "gpi": 4.3
+        }
+      ]
+    },
+    {
+      "id": "dk-cougar-id42",
+      "brand": "DK Bowfactory",
+      "model": "Cougar ID 4.2",
+      "material": "Carbonio ad alto modulo",
+      "internalDiameterMm": 4.2,
+      "source": "https://dkbow.de/Pfeile/DK-Carbon-Arrows/DK-Cougar-ID4.2/",
+      "note": "Le varianti e le specifiche sono quelle pubblicate da DK Bowfactory.",
+      "variants": [
+        {
+          "spine": "600",
+          "outerDiameterMm": 5.74,
+          "gpi": 7.14
+        },
+        {
+          "spine": "700",
+          "outerDiameterMm": 5.61,
+          "gpi": 6.44
+        },
+        {
+          "spine": "800",
+          "outerDiameterMm": 5.52,
+          "gpi": 5.95
+        },
+        {
+          "spine": "1000",
+          "outerDiameterMm": 5.42,
+          "gpi": 5.5
+        },
+        {
+          "spine": "1200",
+          "outerDiameterMm": 5.2,
+          "gpi": 4.6
+        },
+        {
+          "spine": "1300",
+          "outerDiameterMm": 5.2,
+          "gpi": 4.6
+        },
+        {
+          "spine": "1500",
+          "outerDiameterMm": 5.05,
+          "gpi": 3.9
+        },
+        {
+          "spine": "1800",
+          "outerDiameterMm": 5.0,
+          "gpi": 3.4
+        }
+      ]
+    },
+    {
+      "id": "dk-gungnir-id42",
+      "brand": "DK Bowfactory",
+      "model": "Gungnir ID 4.2",
+      "material": "Carbonio ultrahigh-modulus",
+      "internalDiameterMm": 4.2,
+      "source": "https://dkbow.de/Pfeile/DK-Carbon-Arrows/DK-Gungnir-ID4.2/",
+      "note": "Le varianti disponibili dipendono dalla versione del modello.",
+      "variants": [
+        {
+          "spine": "500",
+          "outerDiameterMm": 5.4,
+          "gpi": 5.2
+        },
+        {
+          "spine": "600",
+          "outerDiameterMm": 5.3,
+          "gpi": 4.7
+        },
+        {
+          "spine": "700",
+          "outerDiameterMm": 5.15,
+          "gpi": 4.15
+        },
+        {
+          "spine": "800",
+          "outerDiameterMm": 5.1,
+          "gpi": 3.75
+        },
+        {
+          "spine": "900",
+          "outerDiameterMm": 5.0,
+          "gpi": 3.5
+        },
+        {
+          "spine": "1000",
+          "outerDiameterMm": 4.95,
+          "gpi": 3.25
+        }
+      ]
+    },
+    {
+      "id": "easton-avance",
+      "brand": "Easton",
+      "model": "Avance / Avance Sport",
+      "material": "Carbonio 4 mm",
+      "internalDiameterMm": 4.0,
+      "source": "https://eastonarchery.com/arrows_/avance-avance-sport/",
+      "note": "La misura specifica dipende dalla spine. I dati sono inseriti solo per alcune varianti comuni.",
+      "variants": [
+        {
+          "spine": "500",
+          "outerDiameterIn": 0.227,
+          "gpi": 6.9,
+          "stockLengthIn": 32.5
+        },
+        {
+          "spine": "600",
+          "outerDiameterIn": 0.224,
+          "gpi": 6.5,
+          "stockLengthIn": 32.0
+        }
+      ]
+    },
+    {
+      "id": "easton-x10",
+      "brand": "Easton",
+      "model": "X10",
+      "material": "Carbonio / alluminio, geometria rastremata",
+      "source": "https://eastonarchery.com/targetarrows/",
+      "note": "Nome modello presente nel catalogo ufficiale; per massa e diametro usare la variante e la tabella specifica. Dati varianti non precompilati in questa versione.",
+      "variants": []
+    },
+    {
+      "id": "easton-ace",
+      "brand": "Easton",
+      "model": "A/C/E",
+      "material": "Carbonio su anima in alluminio, geometria barreled",
+      "source": "https://eastonarchery.com/arrows_/a-c-e/",
+      "note": "Attenzione: per A/C/E il GPI pubblicato può essere un valore medio su asta di riferimento; non usarlo come massa esatta universale dopo un taglio senza consultare il metodo del produttore.",
+      "variants": []
+    },
+    {
+      "id": "easton-rx7",
+      "brand": "Easton",
+      "model": "RX-7",
+      "material": "Alluminio",
+      "source": "https://eastonarchery.com/targetarrows/",
+      "note": "Modello indoor presente nel catalogo ufficiale. Specifiche dipendono dalla misura; non auto-precompilate in questo catalogo iniziale.",
+      "variants": []
+    },
+    {
+      "id": "victory-vap",
+      "brand": "Victory Archery",
+      "model": "VAP / VAP V1",
+      "material": "Carbonio",
+      "source": "https://victoryarchery.com/",
+      "note": "La famiglia/modello è indicata come riferimento; diametro, spine e GPI richiedono la specifica versione e spine stampata sull’asta.",
+      "variants": []
+    },
+    {
+      "id": "easton-x10",
+      "brand": "Easton",
+      "model": "X10",
+      "material": "Carbonio / alluminio, geometria rastremata",
+      "source": "https://eastonarchery.com/targetarrows/",
+      "note": "Nome modello presente nel catalogo ufficiale; per massa e diametro usare la variante e la tabella specifica. Dati varianti non precompilati in questa versione.",
+      "variants": []
+    },
+    {
+      "id": "easton-ace",
+      "brand": "Easton",
+      "model": "A/C/E",
+      "material": "Carbonio su anima in alluminio, geometria barreled",
+      "source": "https://eastonarchery.com/arrows_/a-c-e/",
+      "note": "Attenzione: per A/C/E il GPI pubblicato può essere un valore medio su asta di riferimento; non usarlo come massa esatta universale dopo un taglio senza consultare il metodo del produttore.",
+      "variants": []
+    },
+    {
+      "id": "easton-rx7",
+      "brand": "Easton",
+      "model": "RX-7",
+      "material": "Alluminio",
+      "source": "https://eastonarchery.com/targetarrows/",
+      "note": "Modello indoor presente nel catalogo ufficiale. Specifiche dipendono dalla misura; non auto-precompilate in questo catalogo iniziale.",
+      "variants": []
+    },
+    {
+      "id": "victory-vap",
+      "brand": "Victory Archery",
+      "model": "VAP / VAP V1",
+      "material": "Carbonio",
+      "source": "https://victoryarchery.com/",
+      "note": "La famiglia/modello è indicata come riferimento; diametro, spine e GPI richiedono la specifica versione e spine stampata sull’asta.",
+      "variants": []
+    },
+    {
+      "id": "custom",
+      "brand": "Personalizzata",
+      "model": "Inserimento manuale",
+      "material": "Da specificare",
+      "source": "",
+      "note": "Inserisci i dati riportati sulla scheda tecnica della tua asta.",
+      "variants": []
+    }
+  ],
+  "risers": [
+    {
+      "id": "mybo-mykan-25",
+      "brand": "Mybo",
+      "model": "Mykan 25″",
+      "bowType": "barebow",
+      "lengthIn": 25,
+      "fitting": "ILF",
+      "source": "https://mybobrands.com/",
+      "note": "Verificare sempre la generazione e la scheda specifica. I dati del catalogo sono un punto di partenza."
+    },
+    {
+      "id": "mybo-mykan-27",
+      "brand": "Mybo",
+      "model": "Mykan 27″",
+      "bowType": "barebow",
+      "lengthIn": 27,
+      "fitting": "ILF",
+      "source": "https://mybobrands.com/",
+      "note": "Verificare sempre la generazione e la scheda specifica. I dati del catalogo sono un punto di partenza."
+    },
+    {
+      "id": "hoyt-xceed2-25",
+      "brand": "Hoyt",
+      "model": "Xceed 2 25″",
+      "bowType": "olympic",
+      "lengthIn": 25,
+      "fitting": "Grand Prix / ILF",
+      "massG": 1361,
+      "overallLengthsIn": {
+        "short": 66,
+        "medium": 68,
+        "long": 70
+      },
+      "source": "https://hoyt.com/products/xceed-2-25-target-recurve-bow",
+      "note": "Specifiche ufficiali per il modello indicato; controllare sempre l'anno/versione."
+    },
+    {
+      "id": "hoyt-xceed2-27",
+      "brand": "Hoyt",
+      "model": "Xceed 2 27″",
+      "bowType": "olympic",
+      "lengthIn": 27,
+      "fitting": "Grand Prix / ILF",
+      "massG": 1497,
+      "overallLengthsIn": {
+        "short": 68,
+        "medium": 70,
+        "long": 72
+      },
+      "source": "https://hoyt.com/collections/target-recurve-bows",
+      "note": "Specifiche ufficiali per il modello indicato; controllare sempre l'anno/versione."
+    },
+    {
+      "id": "hoyt-formula-sr-25",
+      "brand": "Hoyt",
+      "model": "Formula SR 25″",
+      "bowType": "olympic",
+      "lengthIn": 25,
+      "fitting": "Hoyt Formula (non presumere compatibilità Grand Prix/ILF)",
+      "massG": 1361,
+      "overallLengthsIn": {
+        "short": 66,
+        "medium": 68,
+        "long": 70
+      },
+      "source": "https://hoyt.com/collections/target-recurve-bows",
+      "note": "Attenzione al sistema Formula: il fitting non è da assumere intercambiabile con Grand Prix/ILF."
+    },
+    {
+      "id": "ww-atfx",
+      "brand": "Win&Win",
+      "model": "ATF-X",
+      "bowType": "olympic",
+      "lengthIn": null,
+      "fitting": "Verificare la versione specifica del produttore",
+      "source": "https://www.wiawis.com/",
+      "note": "Modello di catalogo; non viene presunta lunghezza o compatibilità dei flettenti. Completare in base a manuale/versione."
+    },
+    {
+      "id": "wns-delta-lx",
+      "brand": "WNS",
+      "model": "Delta LX",
+      "bowType": "olympic",
+      "lengthIn": 25,
+      "fitting": "Verificare la versione specifica del produttore",
+      "source": "https://www.wns-archery.com/",
+      "note": "Modello di riferimento; confermare manuale e sistema d'attacco prima di usare specifiche numeriche."
+    },
+    {
+      "id": "gillo-gt",
+      "brand": "Gillo",
+      "model": "GT (specificare variante) ",
+      "bowType": "barebow",
+      "lengthIn": null,
+      "fitting": "Verificare la variante",
+      "source": "https://www.gilloarchery.com/",
+      "note": "Famiglia di riser con varianti; la lunghezza e le specifiche vanno confermate per il modello esatto."
+    },
+    {
+      "id": "kinetic-vygo",
+      "brand": "Kinetic",
+      "model": "Vygo",
+      "bowType": "barebow",
+      "lengthIn": 25,
+      "fitting": "Verificare la versione specifica del produttore",
+      "source": "https://www.kineticarchery.com/",
+      "note": "Modello di riferimento; confermare manuale e specifiche della versione acquistata."
+    },
+    {
+      "id": "hoyt-satori-19",
+      "brand": "Hoyt",
+      "model": "Satori 19″",
+      "bowType": "longbow",
+      "lengthIn": 19,
+      "fitting": "Grand Prix / ILF secondo versione specifica",
+      "source": "https://hoyt.com/collections/hoyt-bows",
+      "note": "Riser tradizionale corto; verificare la versione e il tipo di flettente compatibile."
+    },
+    {
+      "id": "ww-atfx",
+      "brand": "Win&Win",
+      "model": "ATF-X",
+      "bowType": "olympic",
+      "lengthIn": null,
+      "fitting": "Verificare la versione specifica del produttore",
+      "source": "https://www.wiawis.com/",
+      "note": "Modello di catalogo; non viene presunta lunghezza o compatibilità dei flettenti. Completare in base a manuale/versione."
+    },
+    {
+      "id": "wns-delta-lx",
+      "brand": "WNS",
+      "model": "Delta LX",
+      "bowType": "olympic",
+      "lengthIn": 25,
+      "fitting": "Verificare la versione specifica del produttore",
+      "source": "https://www.wns-archery.com/",
+      "note": "Modello di riferimento; confermare manuale e sistema d'attacco prima di usare specifiche numeriche."
+    },
+    {
+      "id": "gillo-gt",
+      "brand": "Gillo",
+      "model": "GT (specificare variante) ",
+      "bowType": "barebow",
+      "lengthIn": null,
+      "fitting": "Verificare la variante",
+      "source": "https://www.gilloarchery.com/",
+      "note": "Famiglia di riser con varianti; la lunghezza e le specifiche vanno confermate per il modello esatto."
+    },
+    {
+      "id": "kinetic-vygo",
+      "brand": "Kinetic",
+      "model": "Vygo",
+      "bowType": "barebow",
+      "lengthIn": 25,
+      "fitting": "Verificare la versione specifica del produttore",
+      "source": "https://www.kineticarchery.com/",
+      "note": "Modello di riferimento; confermare manuale e specifiche della versione acquistata."
+    },
+    {
+      "id": "hoyt-satori-19",
+      "brand": "Hoyt",
+      "model": "Satori 19″",
+      "bowType": "longbow",
+      "lengthIn": 19,
+      "fitting": "Grand Prix / ILF secondo versione specifica",
+      "source": "https://hoyt.com/collections/hoyt-bows",
+      "note": "Riser tradizionale corto; verificare la versione e il tipo di flettente compatibile."
+    },
+    {
+      "id": "custom-riser",
+      "brand": "Personalizzato",
+      "model": "Altro riser / modello non catalogato",
+      "bowType": "other",
+      "lengthIn": null,
+      "fitting": "Verificare sul manuale",
+      "source": "",
+      "note": "Inserisci e controlla i dati esatti del produttore."
+    }
+  ],
+  "sources": [
+    {
+      "name": "Easton — Bare Shaft / Tuning Tips",
+      "url": "https://eastonarchery.com/2018/08/tuning-tips-for-the-toxophilite/",
+      "usedFor": "Qualità e ripetibilità del test, peso di compensazione, alternanza dei tiri e modifica di una variabile alla volta."
+    },
+    {
+      "name": "Easton — RX-7 setup and tuning guide",
+      "url": "https://eastonarchery.com/2019/10/technical-guide-to-setting-up-the-easton-rx-7-arrow-shaft/",
+      "usedFor": "Sequenza verticale e orizzontale classica per il rilascio dalle dita; controllo clearance; dipendenza da spine/lunghezza/punta e peso effettivo."
+    },
+    {
+      "name": "Hoyt — Recurve riser catalog / manuals",
+      "url": "https://hoyt.com/pages/manuals",
+      "usedFor": "Specifiche e precauzioni sui limiti di regolazione dipendenti dal modello."
+    },
+    {
+      "name": "DK Bowfactory — Panther ID 6.2, tabella varianti",
+      "url": "https://dkbow.de/Pfeile/DK-Carbon-Arrows/DK-Panther-ID6.2/",
+      "usedFor": "GPI e diametro esterno per spine 400–800."
+    },
+    {
+      "name": "DK Bowfactory — Cougar ID 4.2, tabella varianti",
+      "url": "https://dkbow.de/Pfeile/DK-Carbon-Arrows/DK-Cougar-ID4.2/",
+      "usedFor": "GPI e diametro esterno delle varianti pubblicate."
+    },
+    {
+      "name": "DK Bowfactory — Gungnir ID 4.2, tabella varianti",
+      "url": "https://dkbow.de/Pfeile/DK-Carbon-Arrows/DK-Gungnir-ID4.2/",
+      "usedFor": "GPI e diametro esterno delle varianti pubblicate."
+    },
+    {
+      "name": "Easton — Avance / Avance Sport",
+      "url": "https://eastonarchery.com/arrows_/avance-avance-sport/",
+      "usedFor": "GPI, diametro esterno e lunghezze standard delle varianti consultate."
+    },
+    {
+      "name": "Easton — A/C/E",
+      "url": "https://eastonarchery.com/arrows_/a-c-e/",
+      "usedFor": "Geometria barreled e avvertenza sul GPI medio dichiarato."
+    },
+    {
+      "name": "Hoyt — Xceed 2 25",
+      "url": "https://hoyt.com/products/xceed-2-25-target-recurve-bow",
+      "usedFor": "Lunghezza riser, sistema Grand Prix/ILF, peso e combinazioni lunghezza arco/flettenti."
+    }
+  ]
+}

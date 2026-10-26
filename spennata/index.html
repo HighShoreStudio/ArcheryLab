@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Spennata Lab — Archery Lab</title>
+<meta name="description" content="Spennata Lab: registra i gruppi impennati e spennati, misura gli scostamenti e consulta una guida prudente alla lettura del test.">
+<meta name="theme-color" content="#eef1f6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#05070b" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Archery Lab">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap">
+<link rel="stylesheet" href="../css/glass.css">
+<link rel="stylesheet" href="../css/pages.css">
+</head>
+<body data-tab="spennata" data-root="../">
+<a class="skip" href="#workspace">Vai al test</a>
+<div class="app">
+  <header class="navbar">
+    <div class="nav-left"><a class="nav-btn icon glass" href="../index.html" aria-label="Torna alla Home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></a></div>
+    <div class="nav-title">Spennata Lab</div>
+    <div class="nav-right"><button type="button" class="nav-btn glass" id="recalculateAnalysis"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 14 9l5.5 2-5.5 2-2 5.5L10 13l-5.5-2L10 9z"/></svg>Verifica</button></div>
+  </header>
+
+  <main>
+    <div class="large-title">
+      <span class="eyebrow">TUNING LAB · BARE SHAFT</span>
+      <h1>La freccia ti sta raccontando qualcosa.</h1>
+      <p>Confronta il gruppo delle frecce impennate con quello delle spennate. Misura la distanza fra i due centri e leggi i possibili indizi, un passo alla volta.</p>
+      <div class="steps-inline"><span class="pill">1 · Registra gli impatti</span><span class="pill">2 · Confronta i gruppi</span><span class="pill">3 · Verifica una variabile</span></div>
+    </div>
+
+    <section id="workspace" class="stack">
+      <div class="split">
+        <div class="col">
+          <div class="group">
+            <div class="group-title"><span class="dot"></span>Il tuo test</div>
+            <div class="list">
+              <label for="distance">Distanza test <span>metri</span><input id="distance" type="number" inputmode="numeric" min="1" max="90" step="1" value="18"></label>
+              <label>Tipo di arco <span>per interpretare il test</span>
+                <select id="bowType"><option value="barebow" selected>Arco nudo / stringwalking</option><option value="recurve">Ricurvo, rilascio con dita</option><option value="longbow">Longbow / tradizionale</option><option value="compound">Compound con sgancio meccanico</option></select>
+              </label>
+              <label>Mano dominante <span>guardando verso il bersaglio</span>
+                <select id="hand"><option value="right" selected>Destra</option><option value="left">Sinistra</option></select>
+              </label>
+            </div>
+            <p id="analysisStatus" class="group-foot" aria-live="polite">Registra le frecce impennate e spennate sul bersaglio, poi genera il report con «Verifica».</p>
+            <p id="profileLinkStatus" class="group-foot profile-link-status" aria-live="polite">Se hai salvato un profilo nel Calcolatore, tipo di arco e mano potranno essere precompilati qui. Verifica sempre che corrispondano al setup usato nel test.</p>
+          </div>
+
+          <section class="card target-card" aria-labelledby="target-title">
+            <div class="card-head">
+              <div><span class="kicker">PLOT INTERATTIVO</span><h3 id="target-title">Bersaglio degli impatti</h3></div>
+              <span class="pill" id="targetScaleTag">Finestra ±30 cm · test a 18 m</span>
+            </div>
+            <div class="segmented glass series-toggle" role="group" aria-label="Seleziona il gruppo da registrare">
+              <button type="button" id="selectFletched" class="series-button fletched active" aria-pressed="true"><span class="sw"></span> Impennate <b id="fletchedCount">0</b></button>
+              <button type="button" id="selectBare" class="series-button bare" aria-pressed="false"><span class="sw"></span> Spennate <b id="bareCount">0</b></button>
+            </div>
+            <div class="target-wrap">
+              <svg id="target" viewBox="0 0 440 440" role="img" aria-label="Bersaglio interattivo: tocca per registrare un impatto. Il centro è il punto di mira; destra positiva e alto positivo.">
+                <rect x="20" y="20" width="400" height="400" rx="16" class="target-bg"/>
+                <g id="ringFills"></g><g id="ringLines"></g><g id="targetAxes"></g>
+                <circle cx="220" cy="220" r="4" fill="#d18a38" stroke="#fff" stroke-width="1.5"/>
+                <g id="impactLayer"></g>
+              </svg>
+            </div>
+            <p class="target-help"><strong id="activeGroupLabel">Gruppo selezionato: Impennate</strong> · tocca dove è arrivata la freccia. X positivo = destra. Y positivo = alto.</p>
+            <div class="target-actions">
+              <button type="button" class="btn-outline" id="undoLast">Annulla ultimo</button>
+              <button type="button" class="btn-outline" id="clearActive">Svuota gruppo attivo</button>
+              <button type="button" class="btn-quiet" id="loadExample">Carica esempio</button>
+              <button type="button" class="btn-primary" id="analyzeRosata">Analizza la rosata delle impennate</button>
+            </div>
+          </section>
+        </div>
+
+        <aside class="col">
+          <div class="group">
+            <div class="group-title"><span class="dot" style="background:var(--indigo)"></span>Inserimento preciso</div>
+            <div class="list">
+              <label>X orizzontale <span>cm · + destra</span><input id="coordX" type="number" inputmode="decimal" step="0.1" value="0"></label>
+              <label>Y verticale <span>cm · + alto</span><input id="coordY" type="number" inputmode="decimal" step="0.1" value="0"></label>
+            </div>
+            <button type="button" class="btn-primary full" id="addCoord">Aggiungi al gruppo selezionato</button>
+          </div>
+
+          <section class="card shot-list-card">
+            <div class="card-head">
+              <div><span class="kicker">REGISTRO SESSIONE</span><h3>Frecce inserite</h3></div>
+              <button type="button" class="icon-button" id="clearAll" aria-label="Cancella tutte le frecce" title="Cancella tutte le frecce">↺</button>
+            </div>
+            <div class="shot-list" id="shotList"><div class="empty-list">Non hai ancora registrato impatti. Seleziona un gruppo e clicca sul bersaglio.</div></div>
+            <div class="score-summary" aria-live="polite">
+              <div><span>Impennate</span><strong id="fletchedScoreTotal">0 pt</strong></div>
+              <div><span>Spennate</span><strong id="bareScoreTotal">0 pt</strong></div>
+              <div><span>Sessione</span><strong id="sessionScoreTotal">0 pt</strong></div>
+            </div>
+            <div class="list-footer">
+              <span id="totalCount">0 impatti</span>
+              <span class="export-actions"><button type="button" id="exportPdf" class="text-button">Stampa / PDF ↗</button><button type="button" id="exportCsv" class="text-button">Esporta CSV ↓</button></span>
+            </div>
+          </section>
+        </aside>
+      </div>
+
+      <details class="disclosure tech-profile-details">
+        <summary><span class="row-text"><small class="kicker">FACOLTATIVO · PER AFFINARE LA LETTURA</small><strong id="tech-profile-title">Attrezzatura e condizioni del test</strong></span></summary>
+        <div class="disclosure-body">
+          <p class="muted" style="padding:0 4px">Questi dati non “indovinano” la causa: aiutano a scegliere quali controlli hanno senso. Dove possibile, inserisci valori misurati e la configurazione esatta.</p>
+          <div class="grid-2">
+            <div class="group">
+              <div class="group-title">Arco e rilascio</div>
+              <div class="list">
+                <label class="field-span-2">Crawl (se usato) <span>nota libera; mantienilo uguale tra le serie</span><input id="crawl" type="text" placeholder="es. 10 mm / nock point fisso"></label>
+                <label>Rilascio effettivo <span>Influenza la lettura orizzontale</span>
+                  <select id="releaseMode"><option value="fingers" selected>Dita</option><option value="mechanical">Sgancio meccanico</option><option value="shelf">Dita, arco senza bottone / appoggio sul piatto</option><option value="unknown">Non so / altro</option></select>
+                </label>
+                <label>Potenza effettiva <span>lb, misurata all’allungo reale</span><input id="testActualWeight" type="number" inputmode="decimal" min="1" max="100" step="0.1" placeholder="es. 33,5"></label>
+                <label>Potenza nominale <span>lb stampate, se applicabile</span><input id="testRatedWeight" type="number" inputmode="decimal" min="1" max="100" step="0.5" placeholder="es. 32"></label>
+                <label class="field-span-2">Riser / impugnatura <span>marca, modello, lunghezza</span><input id="testRiser" type="text" maxlength="120" placeholder="es. Mybo Mykan 25″"></label>
+                <label class="field-span-2">Flettenti / arco <span>modello e lunghezza nominale</span><input id="testLimbs" type="text" maxlength="120" placeholder="es. medi, arco 68″"></label>
+                <label>Punto d’incocco <span>mm sopra la squadra, se misurato</span><input id="testNockHeight" type="number" inputmode="decimal" min="-5" max="30" step="0.5" placeholder="es. +6"></label>
+                <label>Brace height <span>mm o pollici: specifica nelle note</span><input id="testBrace" type="text" maxlength="40" placeholder="es. 9,5″ / 24,1 cm"></label>
+                <label>Bottone / plunger <span>Presenza e regolazione attuale</span>
+                  <select id="testPlunger"><option value="unknown" selected>Non indicato</option><option value="none">Assente</option><option value="medium">Presente · regolazione media / base</option><option value="soft">Presente · molla relativamente morbida</option><option value="hard">Presente · molla relativamente dura</option><option value="other">Presente · dato non noto</option></select>
+                </label>
+                <label>Centro / clearance <span>Stato della verifica</span>
+                  <select id="testClearance"><option value="unknown" selected>Non verificati</option><option value="checked">Controllati, nessun contatto evidente</option><option value="suspect">Possibile contatto / interferenza</option></select>
+                </label>
+              </div>
+            </div>
+            <div class="group">
+              <div class="group-title">Pesi e stabilizzazione</div>
+              <div class="list">
+                <label>Pesi aggiuntivi sul riser <span>grammi complessivi</span><input id="testRiserWeight" type="number" inputmode="decimal" min="0" max="10000" step="5" placeholder="es. 500"></label>
+                <label>Stabilizzatori <span>tipo e configurazione</span>
+                  <select id="testStabilizerSetup"><option value="unknown" selected>Non indicati</option><option value="barebow">Peso sul riser · arco nudo</option><option value="olympic">Centrale / laterali · olimpico</option><option value="compound">Stabilizzazione compound</option><option value="traditional">Tradizionale / personalizzata</option><option value="none">Nessuno</option></select>
+                </label>
+                <label>Massa stabilizzatori <span>grammi complessivi</span><input id="testStabilizerMass" type="number" inputmode="decimal" min="0" max="10000" step="5" placeholder="es. 300"></label>
+                <label>Smorzatori <span>numero montato</span><input id="testDamperCount" type="number" inputmode="numeric" min="0" max="20" step="1" placeholder="es. 2"></label>
+                <label>Massa smorzatori <span>grammi complessivi</span><input id="testDamperMass" type="number" inputmode="decimal" min="0" max="5000" step="1" placeholder="es. 40"></label>
+              </div>
+              <p class="group-foot"><strong>Pesi e smorzatori:</strong> annotali per confrontare sessioni svolte con lo stesso assetto. Possono influire su equilibrio, reazione e ripetibilità dell'arco; non sono una correzione diretta della traiettoria della freccia a velocità già misurata.</p>
+
+              <div class="group-title" style="margin-top:16px">Frecce</div>
+              <div class="list">
+                <label>Spine dichiarato <span>Il valore è specifico per modello</span><input id="testSpine" type="text" maxlength="40" placeholder="es. 600 / 0.500″"></label>
+                <label class="field-span-2">Modello asta <span>Marca + modello + diametro interno</span><input id="testArrowModel" list="arrowCatalogList" type="text" maxlength="120" placeholder="Cerca o scrivi il modello"><datalist id="arrowCatalogList"></datalist></label>
+                <label>GPI dichiarato <span>grani/pollice, solo se noto</span><input id="testArrowGpi" type="number" inputmode="decimal" min="0.1" max="50" step="0.01" placeholder="dato produttore"></label>
+                <label>Diametro esterno asta <span>mm, non ID</span><input id="testArrowDiameter" type="number" inputmode="decimal" min="2" max="20" step="0.01" placeholder="es. 7,14"></label>
+                <label>Lunghezza asta <span>pollici, misurata sempre nello stesso modo</span><input id="testArrowLength" type="number" inputmode="decimal" min="10" max="40" step="0.1" placeholder="es. 30,5"></label>
+                <label>Punta <span>grani, solo punta</span><input id="testPoint" type="number" inputmode="decimal" min="0" max="1000" step="1" placeholder="es. 100"></label>
+                <label>Inserto / adattatore <span>grani, separato dalla punta</span><input id="testInsert" type="number" inputmode="decimal" min="0" max="1000" step="1" placeholder="es. 30"></label>
+                <label class="field-span-2">Impennaggio <span>tipo e peso totale</span><input id="testFletching" type="text" maxlength="120" placeholder="es. 3 alette da 1,7 gr"></label>
+              </div>
+            </div>
+          </div>
+
+          <div class="group">
+            <div class="group-title"><span class="dot" style="background:var(--teal)"></span>Catalogo attrezzatura</div>
+            <div class="list">
+              <label>Catalogo aste iniziale <span>Solo valori trovati in una scheda del produttore</span><select id="catalogArrowModel"><option value="">Seleziona un’asta…</option></select></label>
+              <label>Spine disponibile <span>Variante del modello</span><select id="catalogArrowSpine" disabled><option value="">Prima scegli il modello</option></select></label>
+              <label>Catalogo riser <span>Modelli con alcuni dati ufficiali</span><select id="catalogRiser"><option value="">Seleziona un riser…</option></select></label>
+            </div>
+            <div class="btn-row"><button class="btn-secondary" type="button" id="applyArrowCatalog">Carica dati asta</button><button class="btn-secondary" type="button" id="applyRiserCatalog">Carica dati riser</button></div>
+            <p class="group-foot catalog-status" id="catalogStatus" aria-live="polite">Il catalogo è iniziale e non esaustivo. Controlla sempre la scheda esatta e l’anno del prodotto.</p>
+            <details class="catalog-source-details group-foot">
+              <summary>Fonti e schede tecniche usate nel catalogo ›</summary>
+              <div id="catalogSourceLinks" class="catalog-source-links">
+                <a href="https://eastonarchery.com/targetarrows/" target="_blank" rel="noopener noreferrer">Easton · catalogo aste target ↗</a>
+                <a href="https://dkbow.de/Pfeile/DK-Carbon-Arrows/DK-Panther-ID6.2/" target="_blank" rel="noopener noreferrer">DK Panther ID 6.2 ↗</a>
+                <a href="https://dkbow.de/Pfeile/DK-Carbon-Arrows/DK-Cougar-ID4.2/" target="_blank" rel="noopener noreferrer">DK Cougar ID 4.2 ↗</a>
+                <a href="https://hoyt.com/pages/manuals" target="_blank" rel="noopener noreferrer">Hoyt · manuali ufficiali ↗</a>
+              </div>
+            </details>
+          </div>
+
+          <div class="group">
+            <div class="group-title"><span class="dot" style="background:var(--green)"></span>Qualità del test</div>
+            <fieldset class="test-quality list">
+              <legend class="sr-only">Qualità del test — conferma ciò che hai davvero controllato</legend>
+              <label><input type="checkbox" id="qSameDistance" checked> Stessa distanza e stesso punto di mira</label>
+              <label><input type="checkbox" id="qSameCrawl"> Stesso crawl, ancoraggio e pressione delle dita (se applicabile)</label>
+              <label><input type="checkbox" id="qSameComponents" checked> Frecce comparabili: stesso modello, lunghezza, punta, cocca</label>
+              <label><input type="checkbox" id="qMassBalanced"> Peso posteriore della spennata compensato, se necessario</label>
+              <label><input type="checkbox" id="qCalmWeather" checked> Condizioni stabili, niente vento significativo</label>
+              <label><input type="checkbox" id="qClearance"> Clearance / contatti controllati</label>
+            </fieldset>
+            <div class="quality-meter" id="qualityMeter" aria-live="polite">
+              <strong>Affidabilità del test: da valutare</strong>
+              <span>Conferma le condizioni e registra gruppi ripetibili prima di intervenire sull’attrezzatura.</span>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <section class="results-section stack" aria-live="polite">
+        <div class="section-head">
+          <span class="eyebrow">RISULTATI</span>
+          <h2>Quanto sono lontani i gruppi?</h2>
+          <p>Conta il centro medio dei gruppi, non una singola freccia. Per un confronto utile, tira frecce con la stessa mira e mantieni costante il setup.</p>
+        </div>
+
+        <section class="live-conclusion conclusion-caution" id="liveConclusion" aria-live="polite" aria-atomic="true">
+          <div class="live-conclusion-icon" id="liveConclusionIcon">◎</div>
+          <div class="live-conclusion-content">
+            <p class="live-conclusion-eyebrow">ESITO DELLA TUA PROVA</p>
+            <h2 id="liveConclusionTitle">In attesa dei due gruppi</h2>
+            <p id="liveConclusionSummary">Registra gli impatti delle impennate e delle spennate: qui troverai una conclusione specifica, leggibile e aggiornata in tempo reale.</p>
+            <h3 id="liveConclusionActionHeading">Cosa fare adesso</h3>
+            <ol id="liveConclusionSteps"><li>Inserisci gli impatti reali delle due serie.</li><li>Confronta i gruppi senza cambiare regolazioni durante la prova.</li></ol>
+          </div>
+        </section>
+
+        <div class="metrics-grid">
+          <article class="metric-card"><span class="metric-label">Scostamento orizzontale</span><strong id="deltaX">—</strong><small id="deltaXNote">Spennate rispetto alle impennate</small></article>
+          <article class="metric-card"><span class="metric-label">Scostamento verticale</span><strong id="deltaY">—</strong><small id="deltaYNote">Spennate rispetto alle impennate</small></article>
+          <article class="metric-card metric-highlight"><span class="metric-label">Distanza fra i centri</span><strong id="deltaTotal">—</strong><small>Centro spennate ↔ centro impennate</small></article>
+          <article class="metric-card"><span class="metric-label">Campione</span><strong id="sampleStatus">0 / 0</strong><small>Impennate / spennate</small></article>
+        </div>
+
+        <div class="centers-grid">
+          <div class="center-card card"><span class="series-label fletched-label"><i></i> Centro impennate</span><strong id="fletchedCenter">—</strong><small id="fletchedSpread">Inserisci almeno un impatto</small></div>
+          <div class="center-card card"><span class="series-label bare-label"><i></i> Centro spennate</span><strong id="bareCenter">—</strong><small id="bareSpread">Inserisci almeno un impatto</small></div>
+        </div>
+
+        <div class="interpretation-card card">
+          <div class="card-head">
+            <div><span class="kicker">LETTURA GUIDATA</span><h3 id="diagnosisTitle">In attesa dei gruppi</h3></div>
+            <span class="interpretation-mark" id="diagnosisIcon">◎</span>
+          </div>
+          <div class="next-action action-neutral" id="nextAction" aria-live="polite">
+            <div class="next-action-icon" id="actionSymbol" aria-hidden="true">1</div>
+            <div class="next-action-content">
+              <p class="action-eyebrow">COSA FARE ORA</p>
+              <h4 id="actionTitle">Prima raccogli i dati</h4>
+              <p id="actionSummary">Registra i due gruppi alla stessa distanza, con la stessa mira e lo stesso setup.</p>
+              <ol id="actionSteps"><li>Inserisci almeno 3 impatti impennati.</li><li>Inserisci almeno 2 spennati.</li><li>Per arco nudo, mantieni identico il crawl.</li></ol>
+            </div>
+          </div>
+          <div id="diagnosisBody" class="diagnosis-body"><p>La lettura evidenzierà prima la qualità del test, poi le verifiche verticali e solo dopo quelle orizzontali.</p></div>
+          <div class="diagnosis-foot"><strong>Regola d'oro</strong><span>Correggi prima l'eventuale differenza verticale, poi rivaluta l'orizzontale. Cambia una sola variabile alla volta e ripeti il test.</span></div>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="proc-title">
+        <div class="section-head"><span class="eyebrow">PROCEDURA</span><h2 id="proc-title">Come leggere il test</h2></div>
+        <ol class="procedure-grid">
+          <li class="card"><span class="step-n">1</span><h3>Prima rendi il test leggibile</h3><p>Usa la stessa distanza, lo stesso punto di mira e lo stesso crawl se tiri ad arco nudo. Alterna i gruppi e non basare le regolazioni su un singolo impatto.</p></li>
+          <li class="card"><span class="step-n">2</span><h3>Osserva il verticale</h3><p>Nel test tradizionale con rilascio dalle dita, una spennata sopra il gruppo impennato può indicare un punto d'incocco troppo basso; una spennata sotto può indicare il contrario. Verifica con piccoli passi.</p></li>
+          <li class="card"><span class="step-n">3</span><h3>Leggi l'orizzontale con cautela</h3><p>Per archi ricurvi/longbow tirati con le dita, la lettura classica è sinistra = indicazione di freccia rigida per un arciere destro, destra = indicazione di freccia debole; inverti per un mancino. Non è una diagnosi isolata.</p></li>
+        </ol>
+      </section>
+
+      <section class="section" aria-labelledby="knowledge-title">
+        <div class="section-head">
+          <span class="eyebrow">BASE CONOSCITIVA</span>
+          <h2 id="knowledge-title">Quali variabili possono influenzare la spennata?</h2>
+          <p>Consulta questi fattori prima di apportare modifiche. Non sono una tabella automatica di regolazioni: contano insieme e dipendono dal tipo di arco e di rilascio.</p>
+        </div>
+        <div class="knowledge-grid">
+          <article class="card knowledge-item"><span class="row-icon bg-blue" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 12c3-6 6 6 9 0s6 6 9 0"/></svg></span><h3>Spine dinamico</h3><p>Dipende da modello e spine dichiarato, lunghezza dell’asta, massa totale anteriore (punta + inserto), potenza effettiva, geometria e comportamento dell’arco. La tabella del produttore è il punto di partenza: non esiste una conversione universale da “spine 600” a una potenza.</p></article>
+          <article class="card knowledge-item"><span class="row-icon bg-gold" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v18M8 7l4-4 4 4M8 17l4 4 4-4"/></svg></span><h3>Verticale / punto d’incocco</h3><p>Nei test classici con rilascio dalle dita, l’impatto verticale della spennata è un indizio da verificare dopo aver controllato il setup e la ripetibilità. Misura il punto d’incocco con una squadra; non cambiare contemporaneamente tiller e altri parametri.</p></article>
+          <article class="card knowledge-item"><span class="row-icon bg-green" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 12h18M7 8l-4 4 4 4M17 8l4 4-4 4"/></svg></span><h3>Orizzontale / rilascio</h3><p>La regola classica rigido/debole è utilizzabile solo come indizio nei setup a dita e con le condizioni corrette. Bottone, centratura, grip, dito sulla corda, clearance e mano dominante possono confondere la lettura. Per compound con sgancio meccanico serve una procedura specifica.</p></article>
+          <article class="card knowledge-item"><span class="row-icon bg-indigo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19 19 5M14 5h5v5"/></svg></span><h3>Massa e componenti delle frecce</h3><p>Confronta frecce quanto più equivalenti possibile. Togliere le alette riduce il peso sul retro: la guida Easton segnala che la differenza può influenzare il test e suggerisce di compensarla con massa non aerodinamica. Controlla inoltre cocca, innesto, punta, inserti e integrità dell’asta.</p></article>
+          <article class="card knowledge-item"><span class="row-icon bg-red" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 3c6 4 6 14 0 18M7 3v18"/></svg></span><h3>Riser, flettenti e libbraggio</h3><p>La potenza stampata sui flettenti è nominale; la potenza effettiva va misurata all’allungo reale. Lunghezza riser/flettenti, sistema di attacco e regolazioni dei limb bolts cambiano da modello a modello. Non applicare un numero universale di giri: segui il manuale dello specifico produttore e rimisura.</p></article>
+          <article class="card knowledge-item"><span class="row-icon bg-slate" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 14c3-1 5-4 8-4s5 3 8 4M4 18c3-1 5-4 8-4s5 3 8 4"/></svg></span><h3>Tecnica e condizioni</h3><p>Un rilascio non ripetibile, presa sulla corda diversa, crawl variato, vento, gruppi larghi o contatti con rest/finestra possono rendere il test ambiguo. Se i gruppi sono incoerenti, prima ripeti il test: non “correggere” una freccia isolata.</p></article>
+        </div>
+        <div class="alert-card"><strong>Avvertenza importante</strong>Archery Lab fornisce indicazioni informative. La diagnosi richiede competenza tecnica, un test ripetibile e controlli fisici dell’attrezzatura. In caso di dubbi sulla sicurezza, integrità dell’asta, allineamento o regolazione dei flettenti, interrompi la prova e rivolgiti a un tecnico/istruttore qualificato. Non modificare bulloni o tiller oltre i limiti del manuale specifico.</div>
+        <p class="muted sources-note"><strong>Nota tecnica e fonti.</strong> Questo strumento confronta statisticamente i punti inseriti e offre indicazioni iniziali, non una prescrizione automatica di regolazione. Rilascio, grip, clearance, bottone, allineamento, vento e crawl possono alterare il risultato. La lettura orizzontale classica segue la guida tecnica Easton per il test bare-shaft con rilascio dalle dita; le configurazioni compound con sgancio meccanico richiedono altre verifiche. Il catalogo caricato contiene soltanto specifiche pubblicate e non è esaustivo; per spine, diametro e GPI controlla sempre la variante esatta del modello. <a href="https://eastonarchery.com/2019/10/technical-guide-to-setting-up-the-easton-rx-7-arrow-shaft/" target="_blank" rel="noopener noreferrer">Leggi il riferimento tecnico Easton ↗</a></p>
+      </section>
+    </section>
+  </main>
+
+  <footer class="app-footer"><span>Spennata Lab · Diagnosi con contesto attrezzatura · Calcoli locali nel browser</span></footer>
+</div>
+
+<dialog id="reportDialog" class="report-dialog sheet" aria-labelledby="reportDialogTitle">
+  <div class="sheet-grabber" aria-hidden="true"></div>
+  <div class="report-dialog-head">
+    <div>
+      <p class="card-kicker">ARCHERY LAB · ANALISI DEL TEST</p>
+      <h2 id="reportDialogTitle">Report delle volée</h2>
+      <p id="reportSubtitle">Confronto tra impennate e spennate</p>
+    </div>
+    <button type="button" id="closeReport" class="nav-btn icon glass" aria-label="Chiudi report"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  </div>
+  <div class="report-body">
+    <div class="alert-card"><strong>Report stimato, non diagnosi certa.</strong> Le indicazioni sono ipotesi da verificare; non cambiare più regolazioni insieme.</div>
+    <div class="report-metrics">
+      <div class="metric"><span>Scostamento orizzontale</span><strong id="reportDx">—</strong></div>
+      <div class="metric"><span>Scostamento verticale</span><strong id="reportDy">—</strong></div>
+      <div class="metric metric-highlight"><span>Distanza tra i centri</span><strong id="reportDistance">—</strong></div>
+      <div class="metric"><span>Campione I / S</span><strong id="reportSample">—</strong></div>
+    </div>
+    <div class="report-target-wrap">
+      <div><h3>Distribuzione degli impatti</h3><p class="muted">Arancio: impennate · Verde: spennate</p><div id="reportTarget"></div></div>
+      <div><h3>Affidabilità del test</h3><div id="reportQuality"></div></div>
+    </div>
+    <section class="report-recommendation">
+      <p class="card-kicker">PRIORITÀ SUGGERITA</p>
+      <h3 id="reportActionTitle">—</h3>
+      <p id="reportActionSummary">—</p>
+      <ol id="reportActionSteps"></ol>
+    </section>
+    <section class="report-observations"><h3>Lettura dei dati</h3><div id="reportObservations"></div></section>
+    <p class="micro-note">Il report interpreta soltanto i punti e le informazioni inseriti. La spennata è un test comparativo: conferma gli indizi ripetendo il test in condizioni coerenti e, se necessario, con un istruttore o tecnico qualificato.</p>
+    <div class="report-dialog-actions">
+      <button type="button" id="printReport" class="btn-secondary">Stampa / salva PDF</button>
+      <button type="button" id="closeReportBottom" class="btn-primary">Torna al test</button>
+    </div>
+  </div>
+</dialog>
+
+<script src="../js/shell.js"></script>
+<script src="app.js"></script>
+<script src="../js/i18n.js" defer></script>
+</body>
+</html>
